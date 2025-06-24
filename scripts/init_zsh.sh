@@ -13,5 +13,5 @@ source $ZSH/oh-my-zsh.sh
 #     config checkout
 #     config submodule update --init
 
-alias config='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'
+alias config='/usr/bin/git --git-dir=$HOME/.mycfg/ --work-tree=$HOME'
 
