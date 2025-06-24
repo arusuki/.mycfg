@@ -84,5 +84,17 @@ vim.api.nvim_create_user_command('EditVar', M.edit_var, { desc = 'pass', nargs=1
 vim.keymap.set('n', '<leader>v', ":below split | resize 5 | set winfixheight | EditVar ", { desc = 'Telescope help tags' })
 _vars.pythonPath = {"python"}
 
+function clear_terminal()
+  local scrollback = vim.bo.scrollback
+  vim.bo.scrollback = 1
+  local keys = vim.api.nvim_replace_termcodes("a<C-L><C-Q>", true, false, true)
+  vim.api.nvim_feedkeys(keys, "m", false)
+  vim.bo.scrollback = scrollback
+end
+
+vim.api.nvim_create_user_command(
+  'Clear', clear_terminal, { desc = 'clear terminal window', nargs=0, }
+)
+
 return M
 

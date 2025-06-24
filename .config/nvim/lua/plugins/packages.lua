@@ -28,6 +28,9 @@ return {
         -- Server-specific settings. See `:help lsp-quickstart`
         settings = {
           python = {
+            analysis = {
+              typeCheckingMode = "off",
+            },
             pythonPath=pythonPath,
           },
         },
