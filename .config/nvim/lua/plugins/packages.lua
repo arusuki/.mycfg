@@ -13,7 +13,7 @@ return {
     config = function()
       require("mason-lspconfig").setup {
         automatic_enable = false,
-        ensure_installed = { "ruff", "pyright"},
+        ensure_installed = { "ruff", "pyright", "clangd"},
       }
     end
   },
@@ -41,6 +41,7 @@ return {
         end,
       })
       vim.lsp.config('ruff', {})
+      vim.lsp.config('clangd', {})
 
       vim.keymap.set("n", "gh", vim.lsp.buf.hover, {})
       vim.keymap.set("n", "<leader>gd", vim.lsp.buf.definition, {})
