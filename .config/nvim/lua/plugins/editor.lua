@@ -83,6 +83,7 @@ return {
       vim.keymap.set("n", "<leader>e", ":Neotree filesystem toggle left<CR>", {})
       vim.keymap.set("n", "<leader>ob", ":Neotree buffers reveal float<CR>", {})
       vim.keymap.set("n", "<leader>oe", ":Neotree diagnostics reveal float<CR>", {})
+      vim.keymap.set("n", "<leader>og", ":Neotree git_status reveal float<CR>", {})
       require("neo-tree").setup({
           sources = {
             "filesystem",

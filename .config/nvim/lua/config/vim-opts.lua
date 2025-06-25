@@ -20,7 +20,6 @@ vim.keymap.set('n', '<CR>', 'i<CR><Esc>')
 
 vim.keymap.set('t', '<C-q>', '<C-\\><C-n>')
 
-vim.keymap.set('n', '<leader>n', ':nohlsearch<CR>')
 vim.keymap.set('n', '<leader>l', ':lua vim.wo.relativenumber=not vim.wo.relativenumber<CR>')
 vim.keymap.set('n', '<leader>t', ":execute \"belowright \" .. (&lines / 3) .. \"split +terminal\"<CR>")
 vim.keymap.set('n', '<leader>sp', ":split<CR>")
