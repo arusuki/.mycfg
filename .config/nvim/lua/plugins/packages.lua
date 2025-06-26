@@ -34,6 +34,7 @@ return {
             pythonPath=pythonPath,
           },
         },
+
         before_init = function(_, config)
           if config.settings.python.pythonPath == "python" then
             config.settings.python.pythonPath = require("util").get_var("pythonPath")[1]

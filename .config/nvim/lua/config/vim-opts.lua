@@ -67,6 +67,8 @@ vim.api.nvim_create_autocmd('WinLeave', {
 vim.wo.number = true
 vim.wo.relativenumber=true
 
+vim.o.sessionoptions="blank,buffers,curdir,folds,help,tabpages,winsize,winpos,terminal,localoptions"
+
 vim.diagnostic.config({
   virtual_text = true,
 })
