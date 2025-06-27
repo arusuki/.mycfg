@@ -1,3 +1,7 @@
+local function get_buf_number()
+  return vim.fn.bufnr()
+end
+
 return {
   {
     "kylechui/nvim-surround",
@@ -46,6 +50,9 @@ return {
     config = function()
       require('lualine').setup({
         icons_enabled = false,
+        sections = {
+          lualine_z = {'location', get_buf_number},
+        },
       })
     end,
   },
@@ -112,5 +119,11 @@ return {
       {"<Leader>D", "<Cmd>MultipleCursorsJumpNextMatch<CR>", mode = {"n", "x"}, desc = "Jump to next cword"},
       {"<Leader>l", "<Cmd>MultipleCursorsLock<CR>", mode = {"n", "x"}, desc = "Lock virtual cursors"},
     },
+  },
+  {
+    "sindrets/winshift.nvim",
+    config = function()
+      vim.keymap.set('n', '<C-W><C-M>', '<Cmd>WinShift<CR>')
+    end
   },
 }
