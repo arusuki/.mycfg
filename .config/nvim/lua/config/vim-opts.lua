@@ -21,7 +21,7 @@ vim.keymap.set('n', '<C-N>', 'i<CR><Esc>')
 
 vim.keymap.set('t', '<C-q>', '<C-\\><C-n>')
 
-vim.keymap.set('n', '<leader>l', ':lua vim.wo.relativenumber=not vim.wo.relativenumber<CR>')
+vim.keymap.set('n', '<leader>r', ':lua vim.wo.relativenumber=not vim.wo.relativenumber<CR>')
 vim.keymap.set('n', '<leader>t', ":execute \"belowright \" .. (&lines / 3) .. \"split +terminal\"<CR>")
 vim.keymap.set('n', '<leader>sp', ":split<CR>")
 vim.keymap.set('n', '<leader>gf', ":above split<CR>gf")
@@ -95,6 +95,8 @@ vim.wo.relativenumber=true
 
 vim.o.sessionoptions="blank,curdir,folds,help,tabpages,winsize,winpos,terminal,localoptions"
 
-vim.diagnostic.config({
-  virtual_text = true,
-})
+local function toggle_diag_virtual_text()
+  local v = vim.diagnostic.config().virtual_text
+  vim.diagnostic.config({ virtual_text = not v })
+end
+vim.keymap.set('n', '<leader>l', toggle_diag_virtual_text)
