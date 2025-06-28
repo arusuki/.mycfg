@@ -25,10 +25,25 @@ return {
   {
     'nvim-telescope/telescope.nvim', tag = '0.1.8',
      config = function()
-        require('telescope').setup()
+        require('telescope').setup(
+        {
+          pickers = {
+            find_files = {
+              theme = "ivy"
+            },
+            live_grep = {
+              theme = "ivy"
+            },
+            grep_string = {
+              theme = "ivy"
+            },
+          }
+        }
+        )
         require('telescope').load_extension('fzf')
         local builtin = require('telescope.builtin')
         local util = require('util')
+        local themes = require('telescope.themes')
         util.vars.rg_args = {}
         vim.keymap.set('n', '<leader>ff', builtin.find_files, { desc = 'Telescope find files'})
         vim.keymap.set('n', '<leader>fg', function()
@@ -123,7 +138,7 @@ return {
   {
     "sindrets/winshift.nvim",
     config = function()
-      vim.keymap.set('n', '<C-W><C-M>', '<Cmd>WinShift<CR>')
+      vim.keymap.set('n', '<C-W><C-U>', '<Cmd>WinShift<CR>')
     end
   },
 }

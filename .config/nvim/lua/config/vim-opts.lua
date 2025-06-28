@@ -51,6 +51,9 @@ local function is_top_level_window()
   local layout = vim.fn.winlayout()
   local cur_win = vim.fn.win_getid()
 
+  if layout[1] == "col" then
+    return false
+  end
   if layout[1] == "leaf" then
     return layout[2] == cur_win
   end
