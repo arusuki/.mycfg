@@ -34,10 +34,13 @@ return {
             pythonPath=pythonPath,
           },
         },
-
         before_init = function(_, config)
           if config.settings.python.pythonPath == "python" then
-            config.settings.python.pythonPath = require("util").get_var("pythonPath")[1]
+            local pythonPath = require("util").get_var("pythonPath")
+            if pythonPath == nil then
+              return
+            end
+            config.settings.python.pythonPath = pythonPath[1]
           end
         end,
       })

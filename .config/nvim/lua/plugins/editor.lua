@@ -46,6 +46,7 @@ return {
         local themes = require('telescope.themes')
         util.vars.rg_args = {}
         vim.keymap.set('n', '<leader>ff', builtin.find_files, { desc = 'Telescope find files'})
+        vim.keymap.set('n', '<leader>fm', builtin.marks, { desc = 'Telescope find vim marks'})
         vim.keymap.set('n', '<leader>fg', function()
           builtin.live_grep {additional_args=util.get_var("rg_args")}
         end, { desc = 'Telescope live grep'})
@@ -78,13 +79,13 @@ return {
       vim.keymap.set('n', '<leader>h', ":HopWord<CR>", {remap=true})
     end,
   },
-  {
-    'windwp/nvim-autopairs',
-    event = "InsertEnter",
-    config = true
-    -- use opts = {} for passing setup options
-    -- this is equivalent to setup({}) function
-  },
+  -- {
+  --   'windwp/nvim-autopairs',
+  --   event = "InsertEnter",
+  --   config = true
+  --   -- use opts = {} for passing setup options
+  --   -- this is equivalent to setup({}) function
+  -- },
   {
     "nvim-neo-tree/neo-tree.nvim",
     branch = "v3.x",
@@ -141,4 +142,44 @@ return {
       vim.keymap.set('n', '<C-W><C-U>', '<Cmd>WinShift<CR>')
     end
   },
+  {
+    "ThePrimeagen/harpoon",
+    branch = "harpoon2",
+    dependencies = { "nvim-lua/plenary.nvim" },
+    opts = {
+      file_with_line = {
+        create_list_item = function()
+          local file_path = vim.fn.expand("%:p") -- Absolute file path
+          local line_number = vim.fn.line(".")
+
+          if file_path == "" then
+            return nil
+          end
+
+          return {
+            value = file_path .. ":" .. line_number,
+            context = { file_path = file_path, line_number = line_number },
+          }
+        end,
+
+        select = function(list_item, list, option)
+          vim.cmd("edit " .. list_item.context.file_path)
+
+          -- Jump to the line
+          vim.api.nvim_win_set_cursor(0, { list_item.context.line_number, 0 })
+        end,
+      },
+    },
+    config = function()
+      local harpoon = require("harpoon")
+
+      -- REQUIRED
+      harpoon:setup()
+      -- REQUIRED
+      -- vim.keymap.set("n", "<leader>a", function() harpoon:list("file_with_line"):add() end)
+      -- vim.keymap.set("n", "<C-e>", function() harpoon.ui:toggle_quick_menu(harpoon:list()) end)
+      --
+
+    end
+  }
 }

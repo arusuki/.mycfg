@@ -34,12 +34,17 @@ M.get_var = function(key)
   )
 end
 
+M.set_var = function(key, value)
+  _vars[key] = value
+end
+
 M.get_visual_selected_text = function(line_delim)
   local startv = vim.fn.getpos("v")
   local endv = vim.fn.getpos(".")
   local start_line, start_col = startv[2], startv[3]
   local end_line, end_col = endv[2], endv[3]
   local lines = vim.fn.getline(start_line, end_line)
+
   if start_line == end_line then
     return string.sub(lines[1] or "", start_col, end_col)
   end

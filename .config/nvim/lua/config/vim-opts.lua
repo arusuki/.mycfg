@@ -100,3 +100,17 @@ local function toggle_diag_virtual_text()
   vim.diagnostic.config({ virtual_text = not v })
 end
 vim.keymap.set('n', '<leader>l', toggle_diag_virtual_text)
+
+vim.o.autoread = true
+
+local function visual_goto_file()
+  local selected = require("util").get_visual_selected_text('')
+  local path = vim.fn.fnameescape(selected) 
+
+  vim.notify("enter path: " .. path)
+  vim.cmd("split | e " .. path)
+end
+
+vim.keymap.set('v', "<leader>gF", visual_goto_file)
+
+vim.g.clipboard = "osc52"

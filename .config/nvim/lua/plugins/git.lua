@@ -17,7 +17,8 @@ return {
       vim.keymap.set('n', '<leader>gsb', ':Gitsigns stage_buffer<CR>')
 
       vim.keymap.set('n', '<leader>gus', ':Gitsigns undo_stage_hunk<CR>')
-      vim.keymap.set('n', '<leader>grs', ':Gitsigns reset_buffer<CR>')
+      vim.keymap.set('n', '<leader>grsh', ':Gitsigns reset_hunk<CR>')
+      vim.keymap.set('n', '<leader>grsb', ':Gitsigns reset_buffer<CR>')
     end
   }
 }
