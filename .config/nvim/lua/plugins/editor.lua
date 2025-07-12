@@ -181,5 +181,8 @@ return {
       --
 
     end
-  }
+  },
+  {
+    "michaeljsmith/vim-indent-object",
+  },
 }

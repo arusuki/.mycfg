@@ -13,6 +13,7 @@ vim.keymap.set('n', '<c-l>', ':wincmd l<CR>')
 
 vim.keymap.set('n', 'X', ":resize +5<CR>")
 vim.keymap.set('n', 'S', ":resize -5<CR>")
+vim.keymap.set('n', 'Q', ":bd<CR>")
 vim.keymap.set('n', '<Esc>', "<Esc>:nohlsearch<CR>")
 vim.keymap.set('n', '#', '#N')
 vim.keymap.set('n', '*', '*N')
@@ -114,3 +115,16 @@ end
 vim.keymap.set('v', "<leader>gF", visual_goto_file)
 
 vim.g.clipboard = "osc52"
+
+local show_signcolumn = true
+
+local function toggle_signcolumn()
+  if show_signcolumn then
+    vim.opt.signcolumn = "no"
+  else
+    vim.opt.signcolumn = "auto"
+  end
+  show_signcolumn = not show_signcolumn
+end
+
+vim.keymap.set('n', '<leader>os', toggle_signcolumn)
