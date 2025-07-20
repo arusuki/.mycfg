@@ -17,7 +17,7 @@ vim.keymap.set('n', 'Q', ":bd<CR>")
 vim.keymap.set('n', '<Esc>', "<Esc>:nohlsearch<CR>")
 vim.keymap.set('n', '#', '#N')
 vim.keymap.set('n', '*', '*N')
-vim.keymap.set('n', '<CR>', 'i<CR><Esc>0k')
+vim.keymap.set('n', '<C-P>', 'i<CR><Esc>0k')
 vim.keymap.set('n', '<C-N>', 'i<CR><Esc>')
 
 vim.keymap.set('t', '<C-q>', '<C-\\><C-n>')
@@ -128,3 +128,19 @@ local function toggle_signcolumn()
 end
 
 vim.keymap.set('n', '<leader>os', toggle_signcolumn)
+
+for i = 1, 8 do
+  local lhs = "<leader>" .. i
+  local rhs = i .. "<c-w>w"
+  vim.keymap.set("n", lhs, rhs, { desc = "Move to window " .. i })
+end
+
+local maxmise_windows = function()
+  require("util").close_all_other_windows({
+    "filesystem", -- neo-tree
+    "Trouble",
+    "term",
+  })
+end
+
+vim.keymap.set("n", "<leader>wo", maxmise_windows)

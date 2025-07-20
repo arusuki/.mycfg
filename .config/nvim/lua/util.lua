@@ -152,5 +152,43 @@ M.inspect_lsp_client = function()
   end)
 end
 
-return M
+---@param ignore_patterns string[]|nil
+M.close_all_other_windows = function(ignore_patterns)
+  -- Get the current window ID
+  local current_win = vim.api.nvim_get_current_win()
 
+  -- Get the list of all window IDs
+  local windows = vim.api.nvim_list_wins()
+
+  -- Function to check if the buffer name matches any pattern in the list
+  local function should_ignore(buf_name)
+    for _, pattern in
+      ipairs(ignore_patterns or {
+        "filesystem", -- neo-tree
+        "Trouble",
+        "term",
+      })
+    do
+      if string.find(buf_name, pattern) then
+        return true
+      end
+    end
+    return false
+  end
+
+  -- Close all windows except the current one and those matching ignore patterns
+  for _, win in ipairs(windows) do
+    if win ~= current_win then
+      -- Get the buffer ID for the window
+      local buf = vim.api.nvim_win_get_buf(win)
+      -- Get the name of the buffer
+      local buf_name = vim.api.nvim_buf_get_name(buf)
+      -- Check if the buffer's name should be ignored
+      if not should_ignore(buf_name) then
+        vim.api.nvim_win_close(win, false)
+      end
+    end
+  end
+end
+
+return M

@@ -2,6 +2,10 @@ local function get_buf_number()
   return vim.fn.bufnr()
 end
 
+local window = function()
+    return vim.api.nvim_win_get_number(0)
+end
+
 return {
   {
     "kylechui/nvim-surround",
@@ -47,6 +51,7 @@ return {
         util.vars.rg_args = {}
         vim.keymap.set('n', '<leader>ff', builtin.find_files, { desc = 'Telescope find files'})
         vim.keymap.set('n', '<leader>fm', builtin.marks, { desc = 'Telescope find vim marks'})
+        vim.keymap.set('n', '<leader>fh', builtin.help_tags, { desc = 'Lists available help tags'})
         vim.keymap.set('n', '<leader>fg', function()
           builtin.live_grep {additional_args=util.get_var("rg_args")}
         end, { desc = 'Telescope live grep'})
@@ -67,7 +72,11 @@ return {
       require('lualine').setup({
         icons_enabled = false,
         sections = {
+          lualine_a = { window, {'mode'}},
           lualine_z = {'location', get_buf_number},
+        },
+        inactive_sections = {
+          lualine_a = {window}
         },
       })
     end,
@@ -185,4 +194,15 @@ return {
   {
     "michaeljsmith/vim-indent-object",
   },
+  {
+    "LintaoAmons/scratch.nvim",
+    event = "VeryLazy",
+    dependencies = {
+      {"ibhagwan/fzf-lua"},
+    },
+    config = function()
+      vim.keymap.set("n", "<leader>sr", "<cmd>Scratch<cr>")
+      vim.keymap.set("n", "<leader>sor", "<cmd>ScratchOpen<cr>")
+    end
+  }
 }
