@@ -71,6 +71,9 @@ return {
     config = function()
       require('lualine').setup({
         icons_enabled = false,
+        -- tabline = {
+        --   lualine_a = {{'windows', mode=2}},
+        -- },
         sections = {
           lualine_a = { window, {'mode'}},
           lualine_z = {'location', get_buf_number},
@@ -78,6 +81,10 @@ return {
         inactive_sections = {
           lualine_a = {window}
         },
+        options = {
+          component_separators = { left = '|', right = '|'},
+          section_separators = { left = '', right = ''},
+        }
       })
     end,
   },
