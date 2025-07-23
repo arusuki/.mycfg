@@ -3,6 +3,7 @@ vim.cmd("set tabstop=2")
 vim.cmd("set softtabstop=2")
 vim.cmd("set shiftwidth=2")
 vim.g.background = "light"
+vim.go.showtabline = 0
 vim.opt.swapfile = false
 
 -- Navigate vim panes better
@@ -127,6 +128,7 @@ local function toggle_signcolumn()
   show_signcolumn = not show_signcolumn
 end
 
+vim.go.signcolumn = "no"
 vim.keymap.set('n', '<leader>os', toggle_signcolumn)
 
 for i = 1, 8 do

@@ -69,22 +69,44 @@ return {
     'nvim-lualine/lualine.nvim',
     dependencies = { 'nvim-tree/nvim-web-devicons' },
     config = function()
+      local custom_gruvbox = require'lualine.themes.gruvbox'
+      custom_gruvbox.visual.c.bg = custom_gruvbox.normal.c.bg
+      custom_gruvbox.visual.c.fg = custom_gruvbox.normal.c.fg
+      custom_gruvbox.command.c.bg = custom_gruvbox.normal.c.bg
+      custom_gruvbox.command.c.fg = custom_gruvbox.normal.c.fg
+      custom_gruvbox.insert.c.bg = custom_gruvbox.normal.c.bg
+      custom_gruvbox.insert.c.fg = custom_gruvbox.normal.c.fg
+
       require('lualine').setup({
         icons_enabled = false,
         -- tabline = {
         --   lualine_a = {{'windows', mode=2}},
         -- },
         sections = {
-          lualine_a = { window, {'mode'}},
-          lualine_z = {'location', get_buf_number},
+          lualine_a = {{'mode'}},
+          lualine_b = {'branch', {'tabs', mode = 2}},
+          lualine_c = {},
+          lualine_x = {'filename', 'encoding', 'fileformat', 'filetype'},
+          lualine_y = {'progress'},
+          lualine_z = {'location', get_buf_number,},
         },
         inactive_sections = {
-          lualine_a = {window}
+          lualine_a = {}
         },
         options = {
+          theme = custom_gruvbox,
           component_separators = { left = '|', right = '|'},
           section_separators = { left = '', right = ''},
-        }
+          globalstatus = true,
+        },
+        winbar = {
+          lualine_b = {window},
+          lualine_c = {'diagnostics', {'filename', path=3}, 'diff'},
+        },
+        inactive_winbar = {
+          lualine_b = {window},
+          lualine_c = {'filename'},
+        },
       })
     end,
   },
@@ -136,7 +158,11 @@ return {
   {
     "brenton-leighton/multiple-cursors.nvim",
     version = "*",  -- Use the latest tagged version
-    opts = {},  -- This causes the plugin setup function to be called
+    opts = {
+        custom_key_maps = {
+          {"n", "<Leader>|", function() require("multiple-cursors").align() end},
+        },
+    },  -- This causes the plugin setup function to be called
     keys = {
       {"<C-Up>", "<Cmd>MultipleCursorsAddUp<CR>", mode = {"n", "i", "x"}, desc = "Add cursor and move up"},
       {"<C-Down>", "<Cmd>MultipleCursorsAddDown<CR>", mode = {"n", "i", "x"}, desc = "Add cursor and move down"},
