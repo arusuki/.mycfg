@@ -86,7 +86,7 @@ return {
           lualine_a = {{'mode'}},
           lualine_b = {'branch', {'tabs', mode = 2}},
           lualine_c = {},
-          lualine_x = {'filename', 'encoding', 'fileformat', 'filetype'},
+          lualine_x = {'encoding', 'fileformat', 'filetype'},
           lualine_y = {'progress'},
           lualine_z = {'location', get_buf_number,},
         },

@@ -158,7 +158,8 @@ M.close_all_other_windows = function(ignore_patterns)
   local current_win = vim.api.nvim_get_current_win()
 
   -- Get the list of all window IDs
-  local windows = vim.api.nvim_list_wins()
+  local tabpage = vim.api.nvim_get_current_tabpage()
+  local windows = vim.api.nvim_tabpage_list_wins(tabpage)
 
   -- Function to check if the buffer name matches any pattern in the list
   local function should_ignore(buf_name)
