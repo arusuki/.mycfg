@@ -6,6 +6,10 @@ local window = function()
     return vim.api.nvim_win_get_number(0)
 end
 
+local get_width = function()
+  return vim.o.columns / 4 * 3
+end
+
 return {
   {
     "kylechui/nvim-surround",
@@ -84,7 +88,7 @@ return {
         -- },
         sections = {
           lualine_a = {{'mode'}},
-          lualine_b = {'branch', {'tabs', mode = 2}},
+          lualine_b = {'branch', {'tabs', mode = 2, max_length=get_width}},
           lualine_c = {},
           lualine_x = {'encoding', 'fileformat', 'filetype'},
           lualine_y = {'progress'},
