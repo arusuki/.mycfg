@@ -24,7 +24,7 @@ vim.keymap.set('n', '<C-N>', 'i<CR><Esc>')
 vim.keymap.set('t', '<C-q>', '<C-\\><C-n>')
 
 vim.keymap.set('n', '<leader>r', ':lua vim.wo.relativenumber=not vim.wo.relativenumber<CR>')
-vim.keymap.set('n', '<leader>t', ":execute \"belowright \" .. (&lines / 3) .. \"split +terminal\"<CR>")
+vim.keymap.set('n', '<leader>t', ":execute \"belowright \" .. (&lines / 3) .. \"split +terminal\"<CR>:lua vim.wo.winfixheight=false<CR>")
 vim.keymap.set('n', '<leader>sp', ":split<CR>")
 vim.keymap.set('n', '<leader>gf', ":above split<CR>gf")
 vim.keymap.set('n', '<leader>gF', ":above split<CR>gF")
@@ -74,23 +74,23 @@ vim.api.nvim_create_autocmd('WinEnter', {
   callback = function()
     if is_top_level_window() then
       vim.wo.winfixheight = false
-    else
-      vim.cmd.resize(math.floor(vim.o.lines/3))
+    -- else
+    --   vim.cmd.resize(math.floor(vim.o.lines/3))
     end
   end,
 })
-
-vim.api.nvim_create_autocmd('WinLeave', {
-  group = terminal_group,
-  desc = 'automatic change terminal size when leaving',
-  pattern = 'term://*',
-  callback = function()
-    if not is_top_level_window() then
-      vim.cmd.resize(0)
-    end
-    vim.wo.winfixheight = true
-  end,
-})
+--
+-- vim.api.nvim_create_autocmd('WinLeave', {
+--   group = terminal_group,
+--   desc = 'automatic change terminal size when leaving',
+--   pattern = 'term://*',
+--   callback = function()
+--     if not is_top_level_window() then
+--       vim.cmd.resize(1)
+--     end
+--     vim.wo.winfixheight = true
+--   end,
+-- })
 
 vim.wo.number = true
 vim.wo.relativenumber=true

@@ -54,6 +54,7 @@ return {
         local themes = require('telescope.themes')
         util.vars.rg_args = {}
         vim.keymap.set('n', '<leader>ff', builtin.find_files, { desc = 'Telescope find files'})
+        vim.keymap.set('n', '<leader>fi', function() builtin.find_files {no_ignore=true} end, { desc = 'Telescope find files'})
         vim.keymap.set('n', '<leader>fm', builtin.marks, { desc = 'Telescope find vim marks'})
         vim.keymap.set('n', '<leader>fh', builtin.help_tags, { desc = 'Lists available help tags'})
         vim.keymap.set('n', '<leader>fg', function()

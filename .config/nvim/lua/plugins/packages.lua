@@ -45,12 +45,14 @@ return {
         end,
       })
       vim.lsp.config('ruff', {})
-      vim.lsp.config('clangd', {})
+      vim.lsp.config('clangd', {cmd={"clangd", "--completion-style=detailed"}})
 
       vim.keymap.set("n", "gh", vim.lsp.buf.hover, {})
       vim.keymap.set("n", "<leader>gd", vim.lsp.buf.definition, {})
       vim.keymap.set("n", "<leader>gr", vim.lsp.buf.references, {})
       vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, {})
+      vim.keymap.set("n", "<leader>cf", vim.lsp.buf.format, {})
+      vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, {})
     end,
   },
 }
