@@ -45,7 +45,7 @@ return {
         end,
       })
       vim.lsp.config('ruff', {})
-      vim.lsp.config('clangd', {cmd={"clangd", "--completion-style=detailed"}})
+      vim.lsp.config('clangd', {cmd={"clangd", "--completion-style=detailed", "-header-insertion=never"}})
 
       vim.keymap.set("n", "gh", vim.lsp.buf.hover, {})
       vim.keymap.set("n", "<leader>gd", vim.lsp.buf.definition, {})

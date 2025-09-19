@@ -24,7 +24,7 @@ vim.keymap.set('n', '<C-N>', 'i<CR><Esc>')
 vim.keymap.set('t', '<C-q>', '<C-\\><C-n>')
 
 vim.keymap.set('n', '<leader>r', ':lua vim.wo.relativenumber=not vim.wo.relativenumber<CR>')
-vim.keymap.set('n', '<leader>t', ":execute \"belowright \" .. (&lines / 3) .. \"split +terminal\"<CR>:lua vim.wo.winfixheight=false<CR>")
+vim.keymap.set('n', '<leader>t', ":execute \"belowright \" .. (&lines / 3) .. \"split +terminal\"<CR>:lua vim.wo.winfixheight=true<CR>")
 vim.keymap.set('n', '<leader>sp', ":split<CR>")
 vim.keymap.set('n', '<leader>gf', ":above split<CR>gf")
 vim.keymap.set('n', '<leader>gF', ":above split<CR>gF")
