@@ -19,11 +19,13 @@ jobs:
           neovim: true
           version: 'stable'
 
+      - name: Link Neovim Config
+        run: |
+          mkdir -p ~/.config
+          ln -s $GITHUB_WORKSPACE/.config/nvim ~/.config/nvim
+
       - name: Update Neovim Plugins (Lazy)
         run: |
-          echo "Bootstrapping lazy.nvim..."
-          nvim --headless +qa
-
           echo "Updating Neovim plugins with Lazy..."
           nvim --headless "+Lazy! update" +qa
           
