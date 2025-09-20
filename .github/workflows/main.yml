@@ -1,45 +1,42 @@
 name: Update Dotfiles (OMZ & Neovim Plugins)
-
 on:
   workflow_dispatch: # 允许手动触发
   # schedule:
-  #   - cron: '0 0 * * 0' # 每周日午夜运行一次 (UTC时间)
-
+    # - cron: '0 0 * * 0'
 jobs:
   update:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout dotfiles repository
         uses: actions/checkout@v4
         with:
+          fetch-depth: 0 
           submodules: 'recursive'
+      - name: Update all submodules to the latest commit
+        run: |
+          git submodule update --remote --recursive
+      - name: Create Pull Request if changes were found
+        uses: peter-evans/create-pull-request@v6
+        with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          fetch-depth: 0
-
-      - name: Setup Git identity for commit
-        run: |
-          git config user.name "GitHub Actions Bot"
-          git config user.email "actions@github.com"
-
-      - name: Update Oh-My-Zsh (if using submodule)
-        # 仅当 .oh-my-zsh 存在时执行，即作为 submodule
-        if: success()
-        run: |
-          cd .oh-my-zsh
-          git pull origin master # 或者 main，取决于 OMZ 主分支名
-          cd ..
-
-      - name: Check for changes
-        id: check_changes
-        run: |
-          git add .
-          git diff --cached --quiet || echo "::set-output name=changes_detected::true"
-
-      - name: Commit and push changes
-        if: steps.check_changes.outputs.changes_detected == 'true'
-        run: |
-          git commit -m "Automated dotfile updates: OMZ, Neovim plugins"
-          git push origin HEAD
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "chore: Automated submodule updates"
+          committer: "GitHub Actions Bot <actions@github.com>"
+          author: "GitHub Actions Bot <actions@github.com>"
+          
+          title: "[Bot] Update Submodules"
+          body: |
+            This is an auto-generated PR to update the submodules in the dotfiles repository.
+            
+            - Oh-My-Zsh
+            - Neovim plugins
+            - Other submodules
+            
+            Please review the changes and merge if they are acceptable.
+          
+          branch: "bot/auto-update-dotfiles"
+          
+          labels: |
+            automated pr
+            dependencies
+          
+          base: main
