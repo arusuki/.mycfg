@@ -1,0 +1,43 @@
+name: Update Dotfiles (OMZ & Neovim Plugins)
+
+on:
+  workflow_dispatch: # 允许手动触发
+  # schedule:
+  #   - cron: '0 0 * * 0' # 每周日午夜运行一次 (UTC时间)
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout dotfiles repository
+        uses: actions/checkout@v4
+        with:
+          submodules: 'recursive'
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+
+      - name: Setup Git identity for commit
+        run: |
+          git config user.name "GitHub Actions Bot"
+          git config user.email "actions@github.com"
+
+      - name: Update Oh-My-Zsh (if using submodule)
+        # 仅当 .oh-my-zsh 存在时执行，即作为 submodule
+        if: success() && -d '.oh-my-zsh'
+        run: |
+          cd .oh-my-zsh
+          git pull origin master # 或者 main，取决于 OMZ 主分支名
+          cd ..
+
+      - name: Check for changes
+        id: check_changes
+        run: |
+          git add .
+          git diff --cached --quiet || echo "::set-output name=changes_detected::true"
+
+      - name: Commit and push changes
+        if: steps.check_changes.outputs.changes_detected == 'true'
+        run: |
+          git commit -m "Automated dotfile updates: OMZ, Neovim plugins"
+          git push origin HEAD
