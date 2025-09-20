@@ -34,7 +34,7 @@ jobs:
           
       - name: Update all submodules to the latest commit
         run: |
-          git submodule update --remote --recursive
+          git submodule update --remote
       - name: Create Pull Request if changes were found
         uses: peter-evans/create-pull-request@v6
         with:
