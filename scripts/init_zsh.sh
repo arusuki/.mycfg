@@ -6,6 +6,8 @@ plugins=(git zsh-autosuggestions zsh-syntax-highlighting z history-substring-sea
 
 ZSH_CUSTOM=$HOME/zsh_custom
 
+DISABLE_AUTO_UPDATE="true"
+
 source $ZSH/oh-my-zsh.sh
 
 # at $HOME, execute:
