@@ -1,8 +1,11 @@
 name: Update Dotfiles (OMZ & Neovim Plugins)
 on:
   workflow_dispatch: # 允许手动触发
-  # schedule:
-    # - cron: '0 0 * * 0'
+  push:
+    branches:
+      - main
+  schedule:
+    - cron: '0 0 * * 0'
 jobs:
   update:
     runs-on: ubuntu-latest
