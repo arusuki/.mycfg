@@ -13,7 +13,7 @@ return {
     config = function()
       require("mason-lspconfig").setup {
         automatic_enable = false,
-        ensure_installed = { "ruff", "pyright", "clangd"},
+        ensure_installed = { "ruff", "pyright"},
       }
     end
   },
