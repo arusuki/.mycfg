@@ -59,10 +59,7 @@ for tool in "${tools[@]}"; do
 done
 
 $MISE activate --shims
-$MISE use python
-pip install pynvim
-nvim --headless "UpdateRemotePlugins" +qa
-
+$HOME/.local/share/mise/shims/pip install pynvim
 
 # install tmux plugins
 TPM_PATH="$HOME/.tmux/plugins/tpm"
