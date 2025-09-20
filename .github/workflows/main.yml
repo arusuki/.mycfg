@@ -41,3 +41,5 @@ jobs:
         run: |
           git commit -m "Automated dotfile updates: OMZ, Neovim plugins"
           git push origin HEAD
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
