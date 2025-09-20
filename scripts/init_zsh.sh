@@ -1,4 +1,5 @@
 export ZSH=$HOME/.oh-my-zsh
+export PATH="$HOME/.local/share/mise/shims:$PATH"
 
 ZSH_THEME="robbyrussell"
 
@@ -20,7 +21,7 @@ source $ZSH/oh-my-zsh.sh
 #  to initialize tmux tpm plugins, type:
 #     <C-D>I
 
-alias config='/usr/bin/git --git-dir=$HOME/.mycfg/ --work-tree=$HOME'
+alias config="/usr/bin/git --git-dir=$HOME/.mycfg/ --work-tree=$HOME"
 bindkey "^[[A" history-substring-search-up
 bindkey "^[[B" history-substring-search-down
 
