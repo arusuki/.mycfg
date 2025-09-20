@@ -21,7 +21,11 @@ jobs:
 
       - name: Update Neovim Plugins (Lazy)
         run: |
-          nvim --headless "+Lazy! sync" +qa
+          echo "Bootstrapping lazy.nvim..."
+          nvim --headless +qa
+
+          echo "Updating Neovim plugins with Lazy..."
+          nvim --headless "+Lazy! update" +qa
           
       - name: Update all submodules to the latest commit
         run: |
