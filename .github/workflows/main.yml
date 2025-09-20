@@ -12,6 +12,17 @@ jobs:
         with:
           fetch-depth: 0 
           submodules: 'recursive'
+
+      - name: Install Neovim
+        uses: rhysd/action-setup-vim@v1
+        with:
+          neovim: true
+          version: 'stable'
+
+      - name: Update Neovim Plugins (Lazy)
+        run: |
+          nvim --headless "+Lazy! sync" +qa
+          
       - name: Update all submodules to the latest commit
         run: |
           git submodule update --remote --recursive
