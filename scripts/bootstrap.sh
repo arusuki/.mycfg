@@ -40,7 +40,6 @@ tools=(
   "node"
   "python"
   "neovim"
-  "tmux"
   "fd"
   "fzf"
   "ripgrep"
@@ -60,6 +59,7 @@ done
 
 $MISE activate --shims
 $HOME/.local/share/mise/shims/pip install pynvim
+nvim --headless -c "Lazy load wilder.nvim" -c "UpdateRemotePlugins" -c "qa\!"
 
 # install tmux plugins
 TPM_PATH="$HOME/.tmux/plugins/tpm"
