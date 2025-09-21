@@ -1,5 +1,5 @@
 export ZSH=$HOME/.oh-my-zsh
-export PATH="$HOME/.local/share/mise/shims:$PATH"
+export PATH="$PATH:$HOME/.local/share/mise/shims"
 
 ZSH_THEME="robbyrussell"
 
