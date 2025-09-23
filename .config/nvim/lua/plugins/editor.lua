@@ -42,8 +42,21 @@ return {
   {
     'nvim-telescope/telescope.nvim', tag = '0.1.8',
      config = function()
+        local actions = require("telescope.actions")
         require('telescope').setup(
         {
+          defaults = {
+            mappings = {
+              i = {
+                ["<C-Down>"] = actions.cycle_history_next,
+                ["<C-Up>"] = actions.cycle_history_prev,
+              }
+            }
+          },
+          -- defaults = {mappings = {
+          --   ["<C-Down>"] = actions.cycle_history_next,
+          --   ["<C-Up>"] = actions.cycle_history_prev,
+          -- }},
           pickers = {
             find_files = {
               theme = "ivy"
@@ -240,6 +253,11 @@ return {
   },
   {
     "michaeljsmith/vim-indent-object",
+  },
+  {
+    "ibhagwan/fzf-lua",
+    dependencies = { "nvim-tree/nvim-web-devicons" }, 
+    opts = {}
   },
   {
     "LintaoAmons/scratch.nvim",
