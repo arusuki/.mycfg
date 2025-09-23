@@ -21,11 +21,20 @@ return {
         })
     end
   },
+  -- {
+  --   "ellisonleao/gruvbox.nvim",
+  --   priority = 1000,
+  --   config = function()
+  --     -- vim.cmd.colorscheme "gruvbox"
+  --   end, 
+  --   opts = ...,
+  -- },
   {
-    "ellisonleao/gruvbox.nvim",
+    "vague2k/vague.nvim",
+    lazy = false,
     priority = 1000,
     config = function()
-      vim.cmd.colorscheme "gruvbox"
+      vim.cmd.colorscheme "vague"
     end, 
     opts = ...,
   },
@@ -99,7 +108,7 @@ return {
           lualine_a = {}
         },
         options = {
-          theme = custom_gruvbox,
+          theme = require 'lualine.themes.base16',
           component_separators = { left = '|', right = '|'},
           section_separators = { left = '', right = ''},
           globalstatus = true,
