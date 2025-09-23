@@ -21,20 +21,14 @@ return {
         })
     end
   },
-  -- {
-  --   "ellisonleao/gruvbox.nvim",
-  --   priority = 1000,
-  --   config = function()
-  --     -- vim.cmd.colorscheme "gruvbox"
-  --   end, 
-  --   opts = ...,
-  -- },
   {
-    "vague2k/vague.nvim",
+  --   "ellisonleao/gruvbox.nvim",
+    -- "jacoborus/tender.vim",
+    "dgox16/oldworld.nvim",
     lazy = false,
     priority = 1000,
     config = function()
-      vim.cmd.colorscheme "vague"
+      vim.cmd.colorscheme "oldworld"
     end, 
     opts = ...,
   },
