@@ -1,6 +1,12 @@
 export ZSH=$HOME/.oh-my-zsh
 export PATH="$PATH:$HOME/.local/share/mise/shims"
 
+if command -v brew >/dev/null 2>&1; then
+  export MISE=/opt/homebrew/bin/mise
+else
+  export MISE=$HOME/.local/bin/mise
+fi
+
 ZSH_THEME="robbyrussell"
 
 plugins=(git zsh-autosuggestions zsh-syntax-highlighting z history-substring-search)
