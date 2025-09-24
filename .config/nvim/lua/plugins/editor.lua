@@ -22,15 +22,39 @@ return {
     end
   },
   {
-  --   "ellisonleao/gruvbox.nvim",
-    -- "jacoborus/tender.vim",
-    "dgox16/oldworld.nvim",
-    lazy = false,
-    priority = 1000,
-    config = function()
-      vim.cmd.colorscheme "oldworld"
-    end, 
-    opts = ...,
+  'projekt0n/github-nvim-theme',
+  name = 'github-theme',
+  lazy = false, -- make sure we load this during startup if it is your main colorscheme
+  priority = 1000, -- make sure to load this before all the other start plugins
+  config = function()
+    local specs = {
+      all = {
+        syntax = {
+          string = '#98C379',
+          module = '#ECBE7B',
+          -- keyword = '#FAFA90',
+          -- trailing = '#E3595B',
+          trailing = '#E69728',
+        },
+      }
+    }
+    local groups = {
+      all = {
+        String = { fg = 'syntax.string' },
+        -- Keyword = { fg = 'syntax.keyword', style = 'bold' },
+        ['@module'] = { fg = 'syntax.module', style = 'bold' },
+        TrailingWhitespace = { bg = 'syntax.trailing' }
+      }
+    }
+    require('github-theme').setup({
+      options = {
+        styles = {
+        }
+      }, specs = specs, groups = groups
+    })
+
+    vim.cmd('colorscheme github_dark_dimmed')
+  end,
   },
   { 'nvim-telescope/telescope-fzf-native.nvim', build = 'make' },
   {
@@ -250,7 +274,7 @@ return {
   },
   {
     "ibhagwan/fzf-lua",
-    dependencies = { "nvim-tree/nvim-web-devicons" }, 
+    dependencies = { "nvim-tree/nvim-web-devicons" },
     opts = {}
   },
   {

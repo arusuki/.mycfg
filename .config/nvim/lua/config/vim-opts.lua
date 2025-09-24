@@ -146,3 +146,16 @@ local maxmise_windows = function()
 end
 
 vim.keymap.set("n", "<leader>wo", maxmise_windows)
+
+
+local trailingWhitespaceGroup = vim.api.nvim_create_augroup('TrailingWhitespace', { clear = true })
+vim.api.nvim_create_autocmd(
+  { 'ColorScheme', 'BufWinEnter', 'WinEnter' },
+  {
+    group = trailingWhitespaceGroup,
+    pattern = '*',
+    callback = function()
+      vim.fn.matchadd('TrailingWhitespace', '\\s\\+$')
+    end,
+  }
+)
