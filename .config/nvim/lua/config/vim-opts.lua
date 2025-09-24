@@ -24,7 +24,7 @@ vim.keymap.set('n', '<C-N>', 'i<CR><Esc>')
 vim.keymap.set('t', '<C-q>', '<C-\\><C-n>')
 
 vim.keymap.set('n', '<leader>r', ':lua vim.wo.relativenumber=not vim.wo.relativenumber<CR>')
-vim.keymap.set('n', '<leader>t', ":execute \"belowright \" .. (&lines / 3) .. \"split +terminal\"<CR>:lua vim.wo.winfixheight=true<CR>")
+vim.keymap.set('n', '<leader>t', ":execute \"belowright \" .. (&lines / 3) .. \"split +terminal\"<CR>:lua vim.wo.winfixheight=true<CR>:execute clearmatches()<CR>")
 vim.keymap.set('n', '<leader>sp', ":split<CR>")
 vim.keymap.set('n', '<leader>gf', ":above split<CR>gf")
 vim.keymap.set('n', '<leader>gF', ":above split<CR>gF")
@@ -149,13 +149,34 @@ vim.keymap.set("n", "<leader>wo", maxmise_windows)
 
 
 local trailingWhitespaceGroup = vim.api.nvim_create_augroup('TrailingWhitespace', { clear = true })
+
+local ignored_buftypes = {terminal = true, nofile = true }
+
+local ignored_filetypes = {
+  ['neo-tree'] = true,
+  Trouble = true,
+  trouble = true,
+}
+
 vim.api.nvim_create_autocmd(
   { 'ColorScheme', 'BufWinEnter', 'WinEnter' },
   {
     group = trailingWhitespaceGroup,
     pattern = '*',
     callback = function()
-      vim.fn.matchadd('TrailingWhitespace', '\\s\\+$')
+      local buftype = vim.bo.buftype
+      local filetype = vim.bo.filetype
+      if ignored_buftypes[buftype] or ignored_filetypes[filetype] then
+        if vim.w.trailing_whitespace_match_id then
+          pcall(vim.fn.matchdelete, vim.w.trailing_whitespace_match_id, vim.api.nvim_get_current_win())
+          vim.w.trailing_whitespace_match_id = nil
+        end
+        return
+      end
+      if vim.w.trailing_whitespace_match_id then
+        return
+      end
+      vim.w.trailing_whitespace_match_id = vim.fn.matchadd('TrailingWhitespace', '\\s\\+$')
     end,
   }
 )
