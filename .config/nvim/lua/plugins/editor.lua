@@ -32,8 +32,7 @@ return {
         syntax = {
           string = '#98C379',
           module = '#ECBE7B',
-          -- keyword = '#FAFA90',
-          -- trailing = '#E3595B',
+          keyword = '#D8B45B',
           trailing = '#E69728',
         },
       }
@@ -41,7 +40,8 @@ return {
     local groups = {
       all = {
         String = { fg = 'syntax.string' },
-        -- Keyword = { fg = 'syntax.keyword', style = 'bold' },
+        Keyword = { fg = 'syntax.keyword', style = 'bold' },
+        Function = { link = '@variable' },
         ['@module'] = { fg = 'syntax.module', style = 'bold' },
         TrailingWhitespace = { bg = 'syntax.trailing' }
       }
@@ -53,7 +53,7 @@ return {
       }, specs = specs, groups = groups
     })
 
-    vim.cmd('colorscheme github_dark_dimmed')
+    vim.cmd('colorscheme github_dark')
   end,
   },
   { 'nvim-telescope/telescope-fzf-native.nvim', build = 'make' },
