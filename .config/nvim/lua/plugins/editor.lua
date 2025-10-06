@@ -287,5 +287,9 @@ return {
       vim.keymap.set("n", "<leader>sr", "<cmd>Scratch<cr>")
       vim.keymap.set("n", "<leader>sor", "<cmd>ScratchOpen<cr>")
     end
-  }
+  },
+  {
+    'MeanderingProgrammer/render-markdown.nvim',
+    opts = {},
+  },
 }

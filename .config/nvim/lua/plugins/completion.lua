@@ -100,7 +100,7 @@ return {
           wilder.python_search_pipeline({pattern="fuzzy"})
         ),
       })
-  
+
       theme = wilder.popupmenu_border_theme({
         highlighter = wilder.basic_highlighter(),
         highlights = {

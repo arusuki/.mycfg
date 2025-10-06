@@ -180,3 +180,7 @@ vim.api.nvim_create_autocmd(
     end,
   }
 )
+
+-- setup tree-sitter based fold
+vim.opt_local.foldmethod = 'expr'
+vim.opt_local.foldexpr = 'v:lua.vim.treesitter.foldexpr()'

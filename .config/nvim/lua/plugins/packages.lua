@@ -13,7 +13,7 @@ return {
     config = function()
       require("mason-lspconfig").setup {
         automatic_enable = false,
-        ensure_installed = { "ruff", "pyright"},
+        ensure_installed = { "ruff", "pyright", "marksman"},
       }
     end
   },
@@ -45,6 +45,9 @@ return {
         end,
       })
       vim.lsp.config('ruff', {})
+      vim.lsp.config('gopls', {})
+      vim.lsp.config('ts_ls', {})
+      vim.lsp.config('marksman', {})
       vim.lsp.config('clangd', {cmd={"clangd", "--completion-style=detailed", "-header-insertion=never"}})
 
       vim.keymap.set("n", "gh", vim.lsp.buf.hover, {})
