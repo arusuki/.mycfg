@@ -184,3 +184,8 @@ vim.api.nvim_create_autocmd(
 -- setup tree-sitter based fold
 vim.opt_local.foldmethod = 'expr'
 vim.opt_local.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
+vim.go.foldlevelstart = 99
+
+-- line wrap
+vim.opt.linebreak = true
+vim.opt.showbreak = '↪ '
