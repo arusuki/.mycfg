@@ -139,9 +139,9 @@ end
 
 local maxmise_windows = function()
   require("util").close_all_other_windows({
-    "filesystem", -- neo-tree
+    -- "filesystem", -- neo-tree
     "Trouble",
-    "term",
+    -- "term",
   })
 end
 
@@ -189,3 +189,45 @@ vim.go.foldlevelstart = 99
 -- line wrap
 vim.opt.linebreak = true
 vim.opt.showbreak = '↪ '
+
+-- "compilation mode"
+
+local function get_visible_bufs_set()
+  local visible_bufs = {}
+  local wins = vim.api.nvim_list_wins()
+  for _, win_id in ipairs(wins) do
+    if vim.api.nvim_win_is_valid(win_id) then
+      local buf_id = vim.api.nvim_win_get_buf(win_id)
+      if vim.api.nvim_buf_is_valid(buf_id) then
+        visible_bufs[buf_id] = true
+      end
+    end
+  end
+  return visible_bufs
+end
+
+local function focus_mru_terminal_optimized()
+  local bufs = vim.fn.getbufinfo({ buflisted = 1 })
+  local mru_terminal_bufnr = nil
+  local max_lastused = -1
+  local visible_bufs = get_visible_bufs_set()
+
+  for _, buf in ipairs(bufs) do
+    if vim.bo[buf.bufnr].buftype == 'terminal' and visible_bufs[buf.bufnr] == nil then
+      if buf.lastused > max_lastused then
+        max_lastused = buf.lastused
+        mru_terminal_bufnr = buf.bufnr
+      end
+    end
+  end
+  if mru_terminal_bufnr then
+    vim.cmd('buffer ' .. mru_terminal_bufnr)
+  else
+    print("No terminal found. Opening a new one.")
+    vim.cmd('belowright split | terminal')
+  end
+  vim.api.nvim_feedkeys("a", "a", false)
+end
+
+vim.keymap.set('n', '<leader>cm', focus_mru_terminal_optimized)
+vim.keymap.set('n', '<leader>cc', '<Cmd>b#<CR>')

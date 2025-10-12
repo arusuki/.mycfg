@@ -108,7 +108,7 @@ return {
         end,
         { desc = 'Telescope find files in visual mode' }
       )
-   end, 
+   end,
   },
   {
     'nvim-lualine/lualine.nvim',
@@ -162,13 +162,13 @@ return {
       vim.keymap.set('n', '<leader>h', ":HopWord<CR>", {remap=true})
     end,
   },
-  -- {
-  --   'windwp/nvim-autopairs',
-  --   event = "InsertEnter",
-  --   config = true
-  --   -- use opts = {} for passing setup options
-  --   -- this is equivalent to setup({}) function
-  -- },
+  {
+    'windwp/nvim-autopairs',
+    event = "InsertEnter",
+    config = true
+    -- use opts = {} for passing setup options
+    -- this is equivalent to setup({}) function
+  },
   {
     "nvim-neo-tree/neo-tree.nvim",
     branch = "v3.x",
@@ -295,14 +295,20 @@ return {
   },
   {
     'stevearc/oil.nvim',
-    opts = {},
+    opts = {
+    },
     -- Optional dependencies
     dependencies = { { "nvim-mini/mini.icons", opts = {} } },
     -- Lazy loading is not recommended because it is very tricky to make it work correctly in all situations.
     lazy = false,
     config = function()
-      require("oil").setup()
-      vim.keymap.set("n", "-", "<CMD>Oil<CR>", { desc = "Open parent directory" })
+      require("oil").setup({
+        float = {
+          max_width = 0.6,
+          max_height = 0.6,
+        }
+      })
+      vim.keymap.set("n", "-", "<CMD>Oil --float<CR>", { desc = "Open parent directory" })
     end
   }
 }
