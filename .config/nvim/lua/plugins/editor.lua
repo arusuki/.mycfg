@@ -165,7 +165,8 @@ return {
   {
     'windwp/nvim-autopairs',
     event = "InsertEnter",
-    config = true
+    config = true,
+    enabled = false,
     -- use opts = {} for passing setup options
     -- this is equivalent to setup({}) function
   },
@@ -322,11 +323,14 @@ return {
       "TmuxNavigatorProcessList",
     },
     keys = {
-      { "<c-h>", "<cmd><C-U>TmuxNavigateLeft<cr>" },
-      { "<c-j>", "<cmd><C-U>TmuxNavigateDown<cr>" },
-      { "<c-k>", "<cmd><C-U>TmuxNavigateUp<cr>" },
-      { "<c-l>", "<cmd><C-U>TmuxNavigateRight<cr>" },
-      { "<c-\\>", "<cmd><C-U>TmuxNavigatePrevious<cr>" },
+      { "<c-h>", "<cmd>TmuxNavigateLeft<cr>", mode="n" },
+      { "<c-j>", "<cmd>TmuxNavigateDown<cr>", mode="n" },
+      { "<c-k>", "<cmd>TmuxNavigateUp<cr>", mode="n" },
+      { "<c-l>", "<cmd>TmuxNavigateRight<cr>", mode="n" },
+      { "<c-\\>", "<cmd>TmuxNavigatePrevious<cr>", mode="n" },
     },
+    init = function()
+        vim.g.tmux_navigator_no_mappings = 1
+    end,
   }
 }
