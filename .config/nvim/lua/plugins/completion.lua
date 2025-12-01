@@ -115,7 +115,7 @@ return {
         border = 'single',
       })
 
-      theme.left = {"│ ", wilder.popupmenu_devicons() }
+      theme.left = {"│ ", wilder.popupmenu_devicons(), wilder.popupmenu_buffer_flags() }
       wilder.set_option("renderer", wilder.popupmenu_renderer(theme))
     end,
   },
