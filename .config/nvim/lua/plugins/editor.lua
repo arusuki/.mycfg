@@ -307,7 +307,13 @@ return {
         float = {
           max_width = 0.6,
           max_height = 0.6,
-        }
+        },
+        columns = {
+          -- "icon",
+          -- "permissions",
+          -- "size",
+          -- "mtime",
+        },
       })
       vim.keymap.set("n", "-", "<CMD>Oil --float<CR>", { desc = "Open parent directory" })
     end
@@ -347,5 +353,21 @@ return {
     }
     vim.keymap.set("n", "<leader>ct", "<CMD>TSContext toggle<CR>", { desc = "Toggle treesitter context" })
     end
+  },
+  {
+    'stevearc/aerial.nvim',
+    keys = {
+      { "<leader>oo", "<cmd>AerialToggle float<CR>", desc = "[O]pen [Outline]", mode = "n" },
+    },
+    opts = {
+      filter_kind = false,
+      show_guides = true,
+      backends = { "lsp", "treesitter", "markdown", "asciidoc", "man" },
+    },
+
+    dependencies = {
+       "nvim-treesitter/nvim-treesitter",
+       "nvim-tree/nvim-web-devicons"
+    },
   }
 }
