@@ -135,6 +135,10 @@ for i = 1, 8 do
   local lhs = "<leader>" .. i
   local rhs = i .. "<c-w>w"
   vim.keymap.set("n", lhs, rhs, { desc = "Move to window " .. i })
+
+  lhs = "<leader><leader>" .. i
+  local rhs = i .. "gt"
+  vim.keymap.set("n", lhs, rhs, { desc = "Move to tab " .. i })
 end
 
 local maxmise_windows = function()
