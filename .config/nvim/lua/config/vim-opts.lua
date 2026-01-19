@@ -25,7 +25,7 @@ vim.keymap.set('t', '<C-q>', '<C-\\><C-n>')
 
 vim.keymap.set('n', '<leader>r', ':lua vim.wo.relativenumber=not vim.wo.relativenumber<CR>')
 vim.keymap.set('n', '<leader>t', ":execute \"belowright \" .. (&lines / 3) .. \"split +terminal\"<CR>:lua vim.wo.winfixheight=true<CR>:execute clearmatches()<CR>")
-vim.keymap.set('n', '<leader>sp', ":split<CR>")
+vim.keymap.set('n', '<leader>sp', ":split | wincmd j<CR>")
 vim.keymap.set('n', '<leader>gf', ":above split<CR>gf")
 vim.keymap.set('n', '<leader>gF', ":above split<CR>gF")
 vim.keymap.set('n', '<leader>se', ":lua vim.diagnostic.open_float(0, {scope=\"line\", source=true})<CR>")
