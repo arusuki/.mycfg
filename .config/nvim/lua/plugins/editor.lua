@@ -58,7 +58,7 @@ return {
   },
   { 'nvim-telescope/telescope-fzf-native.nvim', build = 'make' },
   {
-    'nvim-telescope/telescope.nvim', tag = '0.1.8',
+    'nvim-telescope/telescope.nvim',
      config = function()
         local actions = require("telescope.actions")
         require('telescope').setup(
