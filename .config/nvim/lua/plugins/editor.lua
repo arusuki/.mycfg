@@ -362,6 +362,7 @@ return {
     },
     opts = {
       filter_kind = false,
+      link_tree_to_folds = false,
       show_guides = true,
       backends = { "lsp", "treesitter", "markdown", "asciidoc", "man" },
     },

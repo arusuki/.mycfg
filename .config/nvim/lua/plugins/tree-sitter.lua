@@ -1,27 +1,28 @@
 return {
   {
     "nvim-treesitter/nvim-treesitter",
-    -- tag = "v0.10.0",
-    -- build = ":TSUpdate",
+    build = ":TSUpdate",
     config = function()
-      -- ts = require("nvim-treesitter.configs")
-      -- ts.setup({
-      --   ensure_installed = {"lua", "python", "c", "cpp", "cuda", "markdown"},
-      --   auto_install = true,
-      --   highlight = { enable = true },
-      --   indent = { enable = true },
-      -- })
-      --
-      ts = require("nvim-treesitter")
+      local ts = require("nvim-treesitter")
+      local ensure_installed = {"lua", "python", "c", "cpp", "cuda", "markdown"}
+
+      ts.install {"lua", "python", "c", "cpp", "cuda", "markdown"}
 
       vim.api.nvim_create_autocmd('FileType', {
-        pattern = { 'python' },
-        callback = function() vim.treesitter.start() end,
+        pattern = ensure_installed,
+        callback = function()
+          -- Highlighting
+          vim.treesitter.start()
+          -- Folds
+          vim.wo[0][0].foldexpr = 'v:lua.vim.treesitter.foldexpr()'
+          vim.wo[0][0].foldmethod = 'expr'
+          -- Indentation
+          vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+        end,
       })
 
-      -- ts.install {"lua", "python", "c", "cpp", "cuda", "markdown"}
     end,
-    -- enabled = false,
+    enabled = true,
   },
   {
     "nvim-treesitter/nvim-treesitter-context",
