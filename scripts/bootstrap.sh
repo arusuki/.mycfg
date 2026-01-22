@@ -24,6 +24,9 @@ fi
 $CONFIG config --local status.showUntrackedFiles no
 $CONFIG submodule update --init
 
+# make tools available -- for tpm installation & nvim tree-sitter plugins to work
+export PATH=$PATH:$HOME/tools
+
 # install mise
 GREEN='\033[0;32m'
 RED='\033[0;31m'
@@ -61,15 +64,6 @@ $MISE activate --shims
 $HOME/.local/share/mise/shims/pip install pynvim
 export PATH="$PATH:$HOME/.local/share/mise/shims" # make nvim command available
 nvim --headless -c "Lazy load wilder.nvim" -c "UpdateRemotePlugins" -c "quit"
-
-# install tmux and tmux plugins
-if ! command -v tmux; then
-  echo -e "${GREEN}tmux not available, installing tmux...${NC}"
-  echo -e "${YELLOW}install tmux with system package manager to avoid compilation, note newer version tmux if preferred.${NC}"
-  MISE_JOBS=16 $MISE install tmux
-  $MISE use -g tmux
-  echo -e "${GREEN}tmux installation done${NC}"
-fi
 
 
 TPM_PATH="$HOME/.tmux/plugins/tpm"

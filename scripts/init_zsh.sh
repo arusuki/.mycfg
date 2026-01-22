@@ -1,5 +1,6 @@
 export ZSH=$HOME/.oh-my-zsh
 export PATH="$PATH:$HOME/.local/share/mise/shims"
+export PATH="$PATH:$HOME/tools"
 
 if command -v brew >/dev/null 2>&1; then
   export MISE=/opt/homebrew/bin/mise
