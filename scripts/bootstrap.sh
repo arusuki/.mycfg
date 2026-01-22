@@ -42,7 +42,6 @@ fi
 tools=(
   "node"
   "python"
-  "neovim"
   "fd"
   "fzf"
   "ripgrep"
