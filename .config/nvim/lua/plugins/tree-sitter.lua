@@ -38,6 +38,6 @@ return {
     }
     vim.keymap.set("n", "<leader>ct", "<CMD>TSContext toggle<CR>", { desc = "Toggle treesitter context" })
     end,
-    enabled = false,
+    enabled = true,
   },
 }

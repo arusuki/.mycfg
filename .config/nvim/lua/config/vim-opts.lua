@@ -11,14 +11,16 @@ vim.opt.swapfile = false
 -- vim.keymap.set('n', '<c-j>', ':wincmd j<CR>')
 -- vim.keymap.set('n', '<c-h>', ':wincmd h<CR>')
 -- vim.keymap.set('n', '<c-l>', ':wincmd l<CR>')
-
 vim.keymap.set('n', 'X', ":resize +5<CR>")
 vim.keymap.set('n', 'S', ":resize -5<CR>")
-vim.keymap.set('n', 'Q', ":bd<CR>")
+vim.keymap.set('n', '<C-M>', ":vertical resize +5<CR>")
+vim.keymap.set('n', '<C-P>', ":vertical resize -5<CR>")
+
+
+vim.keymap.set('n', 'Q', ":quit<CR>")
 vim.keymap.set('n', '<Esc>', "<Esc>:nohlsearch<CR>")
 vim.keymap.set('n', '#', '#N')
 vim.keymap.set('n', '*', '*N')
-vim.keymap.set('n', '<C-P>', 'i<CR><Esc>0k')
 vim.keymap.set('n', '<C-N>', 'i<CR><Esc>')
 
 vim.keymap.set('t', '<C-q>', '<C-\\><C-n>')
@@ -93,10 +95,6 @@ vim.api.nvim_create_autocmd('WinEnter', {
 --   end,
 -- })
 
-vim.wo.number = true
-vim.wo.relativenumber=true
-
-vim.o.sessionoptions="blank,curdir,folds,help,tabpages,winsize,winpos,terminal,localoptions"
 
 local function toggle_diag_virtual_text()
   local v = vim.diagnostic.config().virtual_text
@@ -236,3 +234,8 @@ end
 
 vim.keymap.set('n', '<leader>cm', focus_mru_terminal_optimized)
 vim.keymap.set('n', '<leader>cc', '<Cmd>b#<CR>')
+vim.keymap.set('n', '<leader>cl', "<cmd>Clear<CR>")
+
+vim.wo.number = true
+vim.wo.relativenumber=true
+vim.o.sessionoptions="blank,curdir,folds,help,tabpages,winsize,winpos,terminal,localoptions"
