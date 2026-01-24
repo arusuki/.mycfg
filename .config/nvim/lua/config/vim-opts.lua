@@ -13,7 +13,7 @@ vim.opt.swapfile = false
 -- vim.keymap.set('n', '<c-l>', ':wincmd l<CR>')
 vim.keymap.set('n', 'X', ":resize +5<CR>")
 vim.keymap.set('n', 'S', ":resize -5<CR>")
-vim.keymap.set('n', '<C-M>', ":vertical resize +5<CR>")
+vim.keymap.set('n', '<C-B>', ":vertical resize +5<CR>")
 vim.keymap.set('n', '<C-P>', ":vertical resize -5<CR>")
 
 
@@ -26,7 +26,8 @@ vim.keymap.set('n', '<C-N>', 'i<CR><Esc>')
 vim.keymap.set('t', '<C-q>', '<C-\\><C-n>')
 
 vim.keymap.set('n', '<leader>r', ':lua vim.wo.relativenumber=not vim.wo.relativenumber<CR>')
-vim.keymap.set('n', '<leader>t', ":execute \"belowright \" .. (&lines / 3) .. \"split +terminal\"<CR>:lua vim.wo.winfixheight=true<CR>:execute clearmatches()<CR>")
+vim.keymap.set('n', '<leader>t', "<cmd>execute \"belowright \" .. (&lines / 3) .. \"split +terminal\"<CR><cmd>execute clearmatches()<CR>")
+vim.keymap.set('n', '<leader>T', "<cmd>vsplit<CR><cmd>wincmd l<CR><cmd>terminal<CR><cmd>execute clearmatches()<CR>")
 vim.keymap.set('n', '<leader>sp', ":split | wincmd j<CR>")
 vim.keymap.set('n', '<leader>vp', ":vsplit | wincmd l<CR>")
 vim.keymap.set('n', '<leader>gf', ":above split<CR>gf")
@@ -228,6 +229,7 @@ local function focus_mru_terminal_optimized()
   else
     print("No terminal found. Opening a new one.")
     vim.cmd('belowright split | terminal')
+    vim.cmd('execute clearmatches()')
   end
   vim.api.nvim_feedkeys("a", "a", false)
 end
@@ -235,6 +237,7 @@ end
 vim.keymap.set('n', '<leader>cm', focus_mru_terminal_optimized)
 vim.keymap.set('n', '<leader>cc', '<Cmd>b#<CR>')
 vim.keymap.set('n', '<leader>cl', "<cmd>Clear<CR>")
+vim.keymap.set('n', '<leader>pk', "<cmd>tabnew | b# | tcd %:p:h<CR>")
 
 vim.wo.number = true
 vim.wo.relativenumber=true

@@ -100,7 +100,6 @@ return {
         vim.keymap.set('n', '<leader>fg', function()
           builtin.live_grep {additional_args=util.get_var("rg_args")}
         end, { desc = 'Telescope live grep'})
-        vim.keymap.set('n', '<leader>fb', builtin.buffers, { desc = 'Telescope buffers' })
         vim.keymap.set('n', '<leader>fz', builtin.current_buffer_fuzzy_find, { desc = 'Telescope help tags' })
         vim.keymap.set('v', '<leader>fg', function()
           local selected = util.get_visual_selected_text()
@@ -205,7 +204,6 @@ return {
     config = function()
       vim.keymap.set("n", "<leader>e", ":Neotree filesystem toggle left<CR>", {})
       vim.keymap.set("n", "<leader>ob", ":Neotree buffers reveal float<CR>", {})
-      vim.keymap.set("n", "<leader>oe", ":Neotree diagnostics reveal float<CR>", {})
       vim.keymap.set("n", "<leader>og", ":Neotree git_status reveal float<CR>", {})
       require("neo-tree").setup({
           sources = {
@@ -292,7 +290,11 @@ return {
   {
     "ibhagwan/fzf-lua",
     dependencies = { "nvim-tree/nvim-web-devicons" },
-    opts = {}
+    config = function()
+      vim.keymap.set("n", "<leader>fe", "<cmd>FzfLua diagnostics_document<CR>", {})
+      vim.keymap.set("n", "<leader>fw", "<cmd>FzfLua diagnostics_workspace<CR>", {})
+      vim.keymap.set("n", "<leader>fb", "<cmd>FzfLua buffers<cr>", { desc = 'Telescope buffers' })
+    end
   },
   {
     "LintaoAmons/scratch.nvim",
@@ -332,6 +334,8 @@ return {
         },
       })
       vim.keymap.set("n", "-", "<CMD>Oil --float<CR>", { desc = "Open parent directory" })
+      vim.keymap.set("n", "<leader>ov", '<cmd>lua require("oil").set_columns({ "icon", "permissions", "size", "mtime" })<CR>')
+      vim.keymap.set("n", "<leader>onv", '<cmd>lua require("oil").set_columns {}<CR>')
     end
   },
   {
