@@ -142,6 +142,10 @@ return {
           component_separators = { left = '|', right = '|'},
           section_separators = { left = '', right = ''},
           globalstatus = true,
+          disabled_filetypes = {
+            -- statusline = {'dap-view'},
+            winbar = {'dap-view', 'dap-repl'},
+          },
         },
         winbar = {
           lualine_b = {window},
@@ -160,7 +164,8 @@ return {
       local hop = require('hop')
       hop.setup { keys = 'etovxqpdygfblzhckisuran' }
 
-      vim.keymap.set('n', '<leader>h', ":HopWordMW<CR>", {remap=true})
+      vim.keymap.set('n', '<leader>h', ":HopWord<CR>", {remap=true})
+      vim.keymap.set('n', '<leader>j', ":HopWordMW<CR>", {remap=true})
       -- local directions = require('hop.hint').HintDirection
           -- vim.keymap.set('', 'f', function()
           --   hop.hint_char1({ direction = directions.AFTER_CURSOR, current_line_only = true })

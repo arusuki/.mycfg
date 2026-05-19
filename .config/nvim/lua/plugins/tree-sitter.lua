@@ -2,6 +2,7 @@ return {
   {
     "nvim-treesitter/nvim-treesitter",
     build = ":TSUpdate",
+    branch = "main",
     config = function()
       local ts = require("nvim-treesitter")
       local ensure_installed = {"lua", "python", "c", "cpp", "cuda", "markdown"}
@@ -40,4 +41,27 @@ return {
     end,
     enabled = true,
   },
+  {
+    "sustech-data/wildfire.nvim",
+    event = "VeryLazy",
+    dependencies = { "nvim-treesitter/nvim-treesitter" },
+    config = function()
+      require("wildfire").setup(
+        {
+          surrounds = {
+              { "(", ")" },
+              { "{", "}" },
+              { "<", ">" },
+              { "[", "]" },
+          },
+          keymaps = {
+              init_selection = "<CR>",
+              node_incremental = "<CR>",
+              node_decremental = "<BS>",
+          },
+          filetype_exclude = { "qf" }, --keymaps will be unset in excluding filetypes
+      }
+      )
+    end,
+  }
 }
