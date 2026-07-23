@@ -65,8 +65,7 @@ return {
     end,
   },
   {
-    -- "arusuki/wilder.nvim",
-    dir = "~/dev/wilder.nvim",
+    "arusuki/wilder.nvim",
     init = function(plugin)
       vim.opt.rtp:append(plugin.dir .. "/wilder-fzf")
     end,
