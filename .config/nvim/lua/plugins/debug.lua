@@ -21,7 +21,7 @@ return {
       vim.keymap.set('n', '<leader>co', require'dap'.continue)
       vim.keymap.set('n', '<leader>b', require'dap'.toggle_breakpoint)
       vim.keymap.set('n', '<leader>i', require'dap'.step_into)
-      vim.keymap.set('n', '<c-i>', require'dap'.step_over)
+      -- vim.keymap.set('n', '<c-i>', require'dap'.step_over)
     end
   },
   {

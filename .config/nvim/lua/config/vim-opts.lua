@@ -242,3 +242,6 @@ vim.keymap.set('n', '<leader>pk', "<cmd>tabnew | b# | tcd %:p:h<CR>")
 vim.wo.number = true
 vim.wo.relativenumber=true
 vim.o.sessionoptions="blank,curdir,folds,help,tabpages,winsize,winpos,terminal,localoptions"
+
+
+vim.keymap.set('n', '<leader>y', '"+y', {remap=true})

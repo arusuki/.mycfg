@@ -97,6 +97,8 @@ return {
         vim.keymap.set('n', '<leader>fi', function() builtin.find_files {no_ignore=true} end, { desc = 'Telescope find files'})
         vim.keymap.set('n', '<leader>fm', builtin.marks, { desc = 'Telescope find vim marks'})
         vim.keymap.set('n', '<leader>fh', builtin.help_tags, { desc = 'Lists available help tags'})
+        vim.keymap.set('n', '<leader>fq', builtin.quickfix, { desc = 'Telescope quick fix'})
+
         vim.keymap.set('n', '<leader>fg', function()
           builtin.live_grep {additional_args=util.get_var("rg_args")}
         end, { desc = 'Telescope live grep'})
@@ -121,17 +123,48 @@ return {
       custom_gruvbox.insert.c.bg = custom_gruvbox.normal.c.bg
       custom_gruvbox.insert.c.fg = custom_gruvbox.normal.c.fg
 
+      local active_clock = require("active_clock")
+
+      active_clock.setup({
+        idle_seconds = 5,
+        frames = {
+          "ᕕ( ᐛ )ᕗ",
+          "ᕗ( ᐛ )ᕕ",
+        },
+
+        idle_frame = "(-_-) zZ",
+        pressure_window_seconds = 10 * 60,
+        show_pressure_window_breakdown = false,
+      })
+
       require('lualine').setup({
         icons_enabled = false,
         -- tabline = {
         --   lualine_a = {{'windows', mode=2}},
         -- },
         sections = {
-          lualine_a = {{'mode'}},
-          lualine_b = {'branch', {'tabs', mode = 2, max_length=get_width}},
+          lualine_a = {
+            {'mode'}
+          }
+          ,
+          lualine_b = {
+            'branch', {'tabs', mode = 2, max_length=get_width}
+          },
           lualine_c = {},
-          lualine_x = {'encoding', 'fileformat', 'filetype'},
-          lualine_y = {'progress'},
+          lualine_x = {
+            {
+              active_clock.component,
+              color = {
+                -- fg = "#a6e3a1",
+                -- bg = "#a6e3a1",
+                gui = "bold",
+              },
+            },
+            'encoding', 'fileformat', 'filetype'
+          },
+          lualine_y = {
+            'progress'
+          },
           lualine_z = {'location', get_buf_number,},
         },
         inactive_sections = {
@@ -179,7 +212,7 @@ return {
           -- vim.keymap.set('', 'T', function()
           --   hop.hint_char1({ direction = directions.BEFORE_CURSOR, current_line_only = true, hint_offset = 1 })
           -- end, {remap=true})
-      vim.keymap.set('n', '<leader>y', "<Cmd>HopYankChar1<CR>", {remap=true})
+      -- vim.keymap.set('n', '<leader>y', "<Cmd>HopYankChar1<CR>", {remap=true})
     end,
   },
   {
@@ -299,6 +332,7 @@ return {
       vim.keymap.set("n", "<leader>fe", "<cmd>FzfLua diagnostics_document<CR>", {})
       vim.keymap.set("n", "<leader>fw", "<cmd>FzfLua diagnostics_workspace<CR>", {})
       vim.keymap.set("n", "<leader>fb", "<cmd>FzfLua buffers<cr>", { desc = 'Telescope buffers' })
+      vim.keymap.set('n', '<leader>ft', "<cmd>FzfLua treesitter<cr>", { desc = 'Telescope tree sitter'})
     end
   },
   {
