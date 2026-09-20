@@ -135,14 +135,26 @@ end
 vim.opt.signcolumn = "no"
 vim.keymap.set('n', '<leader>os', toggle_signcolumn)
 
-for i = 1, 8 do
-  local lhs = "<leader>" .. i
-  local rhs = i .. "<c-w>w"
-  vim.keymap.set("n", lhs, rhs, { desc = "Move to window " .. i })
+local function enter_terminal_if_needed()
+  if vim.bo.buftype == "terminal" then
+    vim.cmd("startinsert")
+  end
+end
 
-  lhs = "<leader><leader>" .. i
-  local rhs = i .. "gt"
-  vim.keymap.set("n", lhs, rhs, { desc = "Move to tab " .. i })
+for i = 1, 8 do
+  vim.keymap.set("n", "<leader>" .. i, function()
+    vim.cmd(i .. "wincmd w")
+    enter_terminal_if_needed()
+  end, {
+    desc = "Move to window " .. i,
+  })
+
+  vim.keymap.set("n", "<leader><leader>" .. i, function()
+    vim.cmd("tabnext " .. i)
+    enter_terminal_if_needed()
+  end, {
+    desc = "Move to tab " .. i,
+  })
 end
 
 local maxmise_windows = function()
