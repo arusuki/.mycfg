@@ -1,4 +1,20 @@
-alias config='git --git-dir="$HOME/.mycfg/" --work-tree="$HOME"'
+# Replace the alias too when reloading an existing shell.
+unalias config 2>/dev/null || true
+function config() {
+  local -a config_git_args=(--git-dir="$HOME/.mycfg/" --work-tree="$HOME")
+  local config_result=0 submodule_result=0
+
+  command git "${config_git_args[@]}" "$@" || config_result=$?
+  if [[ "${1-}" == pull ]]; then
+    # Always reconcile submodules, even after a failed pull, from the worktree root.
+    command git "${config_git_args[@]}" -C "$HOME" submodule sync --recursive || submodule_result=$?
+    command git "${config_git_args[@]}" -C "$HOME" submodule update --init --recursive || submodule_result=$?
+    if (( config_result == 0 )); then
+      config_result=$submodule_result
+    fi
+  fi
+  return "$config_result"
+}
 
 # Submodules may have been removed by uninstall.sh.
 [ -f "$HOME/.oh-my-zsh/oh-my-zsh.sh" ] || return 0
