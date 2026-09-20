@@ -1,0 +1,11 @@
+brew "node"
+brew "fd"
+brew "fzf"
+brew "ripgrep"
+brew "neovim"
+brew "tree-sitter-cli"
+brew "tmux"
+brew "zsh"
+
+# Selected by bootstrap.sh or install_packages.sh --with-uv.
+brew "uv" if ENV["MYCFG_WITH_UV"] == "1"

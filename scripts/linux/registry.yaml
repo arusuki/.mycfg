@@ -1,0 +1,36 @@
+---
+# Versions stay in aqua.yaml.
+packages:
+  - name: neovim/neovim
+    type: github_release
+    repo_owner: neovim
+    repo_name: neovim-releases
+    description: Neovim built for glibc 2.17
+    asset: nvim-linux-{{.Arch}}.tar.gz
+    format: tar.gz
+    supported_envs:
+      - linux/amd64
+      - linux/arm64
+    replacements:
+      amd64: x86_64
+    files:
+      - name: nvim
+        src: nvim-linux-{{.Arch}}/bin/nvim
+  - name: tree-sitter/tree-sitter
+    type: github_release
+    repo_owner: arusuki
+    repo_name: tree-sitter-releases
+    description: tree-sitter CLI built for glibc 2.17
+    asset: tree-sitter-cli-linux-{{.Arch}}-glibc-2.17.zip
+    format: zip
+    supported_envs:
+      - linux/amd64
+      - linux/arm64
+    replacements:
+      amd64: x64
+    files:
+      - name: tree-sitter
+    checksum:
+      type: github_release
+      asset: SHA256SUMS
+      algorithm: sha256

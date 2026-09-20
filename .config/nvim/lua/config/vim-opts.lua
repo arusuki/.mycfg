@@ -6,11 +6,6 @@ vim.g.background = "light"
 vim.go.showtabline = 0
 vim.opt.swapfile = false
 
--- Navigate vim panes better
--- vim.keymap.set('n', '<c-k>', ':wincmd k<CR>')
--- vim.keymap.set('n', '<c-j>', ':wincmd j<CR>')
--- vim.keymap.set('n', '<c-h>', ':wincmd h<CR>')
--- vim.keymap.set('n', '<c-l>', ':wincmd l<CR>')
 vim.keymap.set('n', 'X', ":resize +5<CR>")
 vim.keymap.set('n', 'S', ":resize -5<CR>")
 vim.keymap.set('n', '<C-B>', ":vertical resize +5<CR>")
@@ -78,23 +73,9 @@ vim.api.nvim_create_autocmd('WinEnter', {
   callback = function()
     if is_top_level_window() then
       vim.wo.winfixheight = false
-    -- else
-    --   vim.cmd.resize(math.floor(vim.o.lines/3))
     end
   end,
 })
---
--- vim.api.nvim_create_autocmd('WinLeave', {
---   group = terminal_group,
---   desc = 'automatic change terminal size when leaving',
---   pattern = 'term://*',
---   callback = function()
---     if not is_top_level_window() then
---       vim.cmd.resize(1)
---     end
---     vim.wo.winfixheight = true
---   end,
--- })
 
 
 local function toggle_diag_virtual_text()
@@ -159,9 +140,7 @@ end
 
 local maxmise_windows = function()
   require("util").close_all_other_windows({
-    -- "filesystem", -- neo-tree
     "Trouble",
-    -- "term",
   })
 end
 
@@ -195,16 +174,13 @@ vim.api.nvim_create_autocmd(
   }
 )
 
--- setup tree-sitter based fold
 vim.opt_local.foldmethod = 'expr'
 vim.opt_local.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
 vim.go.foldlevelstart = 99
 
--- line wrap
 vim.opt.linebreak = true
 vim.opt.showbreak = '↪ '
 
--- "compilation mode"
 
 local function get_visible_bufs_set()
   local visible_bufs = {}

@@ -12,8 +12,7 @@ local function normalize_range(p1, p2)
     sc, ec = ec, sc
   end
 
-  -- Vim 的 col 是 1-based inclusive；
-  -- Tree-sitter range 是 0-based end-exclusive。
+  -- Convert Vim's inclusive end to Tree-sitter's exclusive end.
   ec = ec + 1
 
   return sr, sc, er, ec
@@ -105,11 +104,7 @@ local function find_horizontal_target(node, direction)
 
     local field_name, named_count = parent_info(parent, cur)
 
-    -- 如果当前节点已经是一个“列表元素”，并且这个方向没有兄弟节点，
-    -- 就不要继续往更外层跳了。
-    --
-    -- 例如 find_files 是 pickers 表里的第一个 field：
-    -- M-h 应该无事发生，而不是跳到 pickers 的上一个兄弟。
+    -- Stop at list boundaries instead of jumping to the parent's siblings.
     if field_name == nil and named_count > 1 then
       return nil
     end
@@ -128,7 +123,6 @@ local function select_node(node)
     return
   end
 
-  -- fallback，不依赖 wildfire 内部 API
   local sr, sc, er, ec = node:range()
   vim.api.nvim_win_set_cursor(0, { sr + 1, sc })
   vim.cmd("normal! v")
@@ -175,7 +169,6 @@ local function pos_to_offset(buf, row, col)
     return offset + col
   end
 
-  -- fallback
   local lines = vim.api.nvim_buf_get_lines(buf, 0, row, false)
   local acc = 0
   for _, line in ipairs(lines) do
@@ -250,9 +243,7 @@ local function sibling_group(node)
   local current_index = nil
 
   for child, field in parent:iter_children() do
-    -- 只在同一个 field_name 下移动。
-    -- 对函数参数、数组元素、table entries 这类列表，field 通常是 nil。
-    -- 这可以避免把 function name 和 arguments 这种结构性节点互换。
+    -- Keep structural fields, such as function names and arguments, separate.
     if is_named(child) and field == current_field then
       table.insert(siblings, child)
 
@@ -285,8 +276,7 @@ local function find_movable_node(node)
 
     local field_name, named_count = parent_info(parent, cur)
 
-    -- 允许穿过“包装节点”，比如 string_content -> string；
-    -- 但不要从 function name、binary left/right、key/value 这类结构字段继续往外跳。
+    -- Climb wrappers, but stop at structural fields or sibling groups.
     if field_name ~= nil or named_count > 1 then
       return nil, nil, nil
     end
@@ -347,7 +337,6 @@ local function move_selected_sibling_text(direction)
       new_texts[index], new_texts[index + 1] = old_texts[index + 1], old_texts[index]
       new_index = index + 1
     else
-      -- 最后一个向后跳：移动到第一个，其它整体右移
       new_texts[1] = old_texts[n]
       for i = 2, n do
         new_texts[i] = old_texts[i - 1]
@@ -359,7 +348,6 @@ local function move_selected_sibling_text(direction)
       new_texts[index], new_texts[index - 1] = old_texts[index - 1], old_texts[index]
       new_index = index - 1
     else
-      -- 第一个向前跳：移动到最后一个，其它整体左移
       for i = 1, n - 1 do
         new_texts[i] = old_texts[i + 1]
       end
@@ -368,10 +356,10 @@ local function move_selected_sibling_text(direction)
     end
   end
 
-  -- 先退出 visual，避免编辑 buffer 后 visual marks 干扰。
+  -- Leave Visual mode so its marks do not interfere with edits.
   vim.cmd("normal! \027")
 
-  -- 从后往前改，避免前面的 edit 影响后面 node 的原始 range。
+  -- Edit backwards to preserve the original ranges.
   for i = n, 1, -1 do
     if new_texts[i] ~= old_texts[i] then
       local r = ranges[i]
@@ -386,7 +374,6 @@ local function move_selected_sibling_text(direction)
     end
   end
 
-  -- 计算移动后的文本在最终 buffer 里的位置。
   local delta_before = 0
   for i = 1, new_index - 1 do
     delta_before = delta_before + #new_texts[i] - #old_texts[i]

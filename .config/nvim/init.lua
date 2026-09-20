@@ -5,6 +5,3 @@ require("config.vim-opts")
 require("config.insert-ops")
 require("config.tree-sitter")
 require("config.terminal")
-
-local home_dir = vim.loop.os_homedir()
-vim.g.python3_host_prog = home_dir .. "/.local/share/mise/shims/python"

@@ -111,7 +111,6 @@ M.inspect_lsp_client = function()
         return
       end
 
-      -- Create a temporary buffer to show the configuration
       local buf = vim.api.nvim_create_buf(false, true)
       local win = vim.api.nvim_open_win(buf, true, {
         relative = 'editor',
@@ -139,10 +138,8 @@ M.inspect_lsp_client = function()
         vim.list_extend(lines, config_lines)
       end
 
-      -- Set the lines in the buffer
       vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
 
-      -- Set buffer options
       vim.bo[buf].modifiable = false
       vim.bo[buf].filetype = 'lua'
       vim.bo[buf].bh = 'delete'
@@ -154,14 +151,11 @@ end
 
 ---@param ignore_patterns string[]|nil
 M.close_all_other_windows = function(ignore_patterns)
-  -- Get the current window ID
   local current_win = vim.api.nvim_get_current_win()
 
-  -- Get the list of all window IDs
   local tabpage = vim.api.nvim_get_current_tabpage()
   local windows = vim.api.nvim_tabpage_list_wins(tabpage)
 
-  -- Function to check if the buffer name matches any pattern in the list
   local function should_ignore(buf_name)
     for _, pattern in
       ipairs(ignore_patterns or {
@@ -177,14 +171,10 @@ M.close_all_other_windows = function(ignore_patterns)
     return false
   end
 
-  -- Close all windows except the current one and those matching ignore patterns
   for _, win in ipairs(windows) do
     if win ~= current_win then
-      -- Get the buffer ID for the window
       local buf = vim.api.nvim_win_get_buf(win)
-      -- Get the name of the buffer
       local buf_name = vim.api.nvim_buf_get_name(buf)
-      -- Check if the buffer's name should be ignored
       if not should_ignore(buf_name) then
         vim.api.nvim_win_close(win, false)
       end

@@ -73,7 +73,6 @@ return {
     config = function()
         local wilder_fzf = require('wilder_fzf')
         wilder_fzf.setup({
-          -- reverse = 1,
           highlights = {
             accent = wilder_fzf.make_hl('WilderFzfPink', 'Pmenu', {
               foreground = '#ff6E00',

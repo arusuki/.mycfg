@@ -1,0 +1,12 @@
+---
+registries:
+  - type: standard
+  - name: mycfg-compat
+    type: local
+    path: registry.yaml
+packages:
+  - registry: standard
+  - name: neovim/neovim
+    registry: mycfg-compat
+  - name: tree-sitter/tree-sitter
+    registry: mycfg-compat

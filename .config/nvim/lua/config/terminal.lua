@@ -60,8 +60,7 @@ local function send_terminal_scroll(buf, button)
     return
   end
 
-  -- Send SGR mouse input directly, keeping Neovim in Normal-mode.
-  -- Use the terminal's center, independent of the physical mouse position.
+  -- Send SGR mouse input at the terminal center without leaving Normal mode.
   local info = vim.fn.getwininfo(vim.api.nvim_get_current_win())[1]
   local col = math.max(1, math.floor((info.width - info.textoff) / 2))
   local row = math.max(1, math.floor(info.height / 2))

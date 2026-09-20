@@ -25,7 +25,6 @@ return {
       local pythonPath = os.getenv("PY") or "python"
 
       vim.lsp.config('pyright', {
-        -- Server-specific settings. See `:help lsp-quickstart`
         settings = {
           python = {
             analysis = {

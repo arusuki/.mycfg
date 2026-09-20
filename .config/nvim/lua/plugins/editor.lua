@@ -13,19 +13,18 @@ end
 return {
   {
     "kylechui/nvim-surround",
-    version = "^3.0.0", -- Use for stability; omit to use `main` branch for the latest features
+    version = "^3.0.0",
     event = "VeryLazy",
     config = function()
         require("nvim-surround").setup({
-            -- Configuration here, or leave empty to use defaults
         })
     end
   },
   {
   'projekt0n/github-nvim-theme',
   name = 'github-theme',
-  lazy = false, -- make sure we load this during startup if it is your main colorscheme
-  priority = 1000, -- make sure to load this before all the other start plugins
+  lazy = false,
+  priority = 1000, -- Load the theme before other plugins.
   config = function()
     local specs = {
       all = {
@@ -71,10 +70,6 @@ return {
               }
             }
           },
-          -- defaults = {mappings = {
-          --   ["<C-Down>"] = actions.cycle_history_next,
-          --   ["<C-Up>"] = actions.cycle_history_prev,
-          -- }},
           pickers = {
             find_files = {
               theme = "ivy"
@@ -140,9 +135,6 @@ return {
 
       require('lualine').setup({
         icons_enabled = false,
-        -- tabline = {
-        --   lualine_a = {{'windows', mode=2}},
-        -- },
         sections = {
           lualine_a = {
             {'mode'}
@@ -156,8 +148,6 @@ return {
             {
               active_clock.component,
               color = {
-                -- fg = "#a6e3a1",
-                -- bg = "#a6e3a1",
                 gui = "bold",
               },
             },
@@ -177,7 +167,6 @@ return {
           section_separators = { left = '', right = ''},
           globalstatus = true,
           disabled_filetypes = {
-            -- statusline = {'dap-view'},
             winbar = {'dap-view', 'dap-repl'},
           },
         },
@@ -200,20 +189,6 @@ return {
 
       vim.keymap.set('n', '<leader>h', ":HopWord<CR>", {remap=true})
       vim.keymap.set('n', '<leader>j', ":HopWordMW<CR>", {remap=true})
-      -- local directions = require('hop.hint').HintDirection
-          -- vim.keymap.set('', 'f', function()
-          --   hop.hint_char1({ direction = directions.AFTER_CURSOR, current_line_only = true })
-          -- end, {remap=true})
-          -- vim.keymap.set('', 'F', function()
-          --   hop.hint_char1({ direction = directions.BEFORE_CURSOR, current_line_only = true })
-          -- end, {remap=true})
-          -- vim.keymap.set('', 't', function()
-          --   hop.hint_char1({ direction = directions.AFTER_CURSOR, current_line_only = true, hint_offset = -1 })
-          -- end, {remap=true})
-          -- vim.keymap.set('', 'T', function()
-          --   hop.hint_char1({ direction = directions.BEFORE_CURSOR, current_line_only = true, hint_offset = 1 })
-          -- end, {remap=true})
-      -- vim.keymap.set('n', '<leader>y', "<Cmd>HopYankChar1<CR>", {remap=true})
     end,
   },
   {
@@ -221,24 +196,20 @@ return {
     event = "InsertEnter",
     config = true,
     enabled = false,
-    -- use opts = {} for passing setup options
-    -- this is equivalent to setup({}) function
   },
   {
     "nvim-neo-tree/neo-tree.nvim",
     branch = "v3.x",
     dependencies = {
       "nvim-lua/plenary.nvim",
-      "nvim-tree/nvim-web-devicons", -- not strictly required, but recommended
+      "nvim-tree/nvim-web-devicons",
       "MunifTanjim/nui.nvim",
       "mrbjarksen/neo-tree-diagnostics.nvim",
-      -- {"3rd/image.nvim", opts = {}}, -- Optional image support in preview window: See `# Preview Mode` for more information
     },
-    lazy = false, -- neo-tree will lazily load itself
+    lazy = false, -- Neo-tree handles lazy loading.
     ---@module "neo-tree"
     ---@type neotree.Config?
     opts = {
-      -- fill any relevant options here
     },
     config = function()
       vim.keymap.set("n", "<leader>e", ":Neotree filesystem toggle left<CR>", {})
@@ -266,15 +237,8 @@ return {
       {"<C-Up>", "<Cmd>MultipleCursorsAddUp<CR>", mode = {"n", "i", "x"}, desc = "Add cursor and move up"},
       {"<C-Down>", "<Cmd>MultipleCursorsAddDown<CR>", mode = {"n", "i", "x"}, desc = "Add cursor and move down"},
 
-      -- {"<C-LeftMouse>", "<Cmd>MultipleCursorsMouseAddDelete<CR>", mode = {"n", "i"}, desc = "Add or remove cursor"},
-      -- {"<Leader>m", "<Cmd>MultipleCursorsAddVisualArea<CR>", mode = {"x"}, desc = "Add cursors to the lines of the visual area"},
-      -- {"<Leader>a", "<Cmd>MultipleCursorsAddMatches<CR>", mode = {"n", "x"}, desc = "Add cursors to cword"},
-      -- {"<Leader>A", "<Cmd>MultipleCursorsAddMatchesV<CR>", mode = {"n", "x"}, desc = "Add cursors to cword in previous area"},
 
       {"<Leader>d", "<Cmd>MultipleCursorsAddJumpNextMatch<CR>", mode = {"n", "x"}, desc = "Add cursor and jump to next cword"},
-      -- {"<Leader>u", "<Cmd>MultipleCursorsJumpPrevMatch<CR>", mode = {"n", "x"}, desc = "Remove cursor to previous cword"},
-      -- {"<Leader>D", "<Cmd>MultipleCursorsJumpNextMatch<CR>", mode = {"n", "x"}, desc = "Jump to next cword"},
-      -- {"<Leader>cl", "<Cmd>MultipleCursorsLock<CR>", mode = {"n", "x"}, desc = "Lock virtual cursors"},
     },
   },
   {
@@ -306,7 +270,6 @@ return {
         select = function(list_item, list, option)
           vim.cmd("edit " .. list_item.context.file_path)
 
-          -- Jump to the line
           vim.api.nvim_win_set_cursor(0, { list_item.context.line_number, 0 })
         end,
       },
@@ -314,12 +277,7 @@ return {
     config = function()
       local harpoon = require("harpoon")
 
-      -- REQUIRED
       harpoon:setup()
-      -- REQUIRED
-      -- vim.keymap.set("n", "<leader>a", function() harpoon:list("file_with_line"):add() end)
-      -- vim.keymap.set("n", "<C-e>", function() harpoon.ui:toggle_quick_menu(harpoon:list()) end)
-      --
 
     end
   },
@@ -372,15 +330,13 @@ return {
   {
     'MeanderingProgrammer/render-markdown.nvim',
     opts = {},
-    -- enabled = false,
   },
   {
     'stevearc/oil.nvim',
     opts = {
     },
-    -- Optional dependencies
     dependencies = { { "nvim-mini/mini.icons", opts = {} } },
-    -- Lazy loading is not recommended because it is very tricky to make it work correctly in all situations.
+    -- Oil must handle directory buffers during startup.
     lazy = false,
     config = function()
       require("oil").setup({
@@ -389,10 +345,6 @@ return {
           max_height = 0.6,
         },
         columns = {
-          -- "icon",
-          -- "permissions",
-          -- "size",
-          -- "mtime",
         },
       })
       vim.keymap.set("n", "-", "<CMD>Oil --float<CR>", { desc = "Open parent directory" })

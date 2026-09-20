@@ -1,6 +1,6 @@
 name: Update Dotfiles (OMZ & Neovim Plugins)
 on:
-  workflow_dispatch: # 允许手动触发
+  workflow_dispatch:
   push:
     branches:
       - main

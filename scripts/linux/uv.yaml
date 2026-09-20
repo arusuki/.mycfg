@@ -1,0 +1,7 @@
+---
+# Optional: installed only when --with-uv is selected.
+registries:
+  - type: standard
+    ref: v4.550.0 # renovate: depName=aquaproj/aqua-registry
+packages:
+  - name: astral-sh/uv@0.12.17

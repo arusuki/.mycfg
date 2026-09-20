@@ -56,8 +56,7 @@ function M.grep(path)
 end
 
 local function input_directory()
-  -- wilder-fzf completes ':' commands but not vim.ui.input() prompts.
-  -- Use GrepDir's directory completion through the existing command-line UI.
+  -- Use command-line prompts so wilder-fzf can complete directories.
   local command = ":GrepDir " .. vim.fn.fnameescape(vim.fn.getcwd() .. "/")
   vim.api.nvim_feedkeys(command, "n", true)
 end
