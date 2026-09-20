@@ -93,6 +93,7 @@ return {
         local util = require('util')
         local themes = require('telescope.themes')
         util.vars.rg_args = {}
+        require('config.grep-directory').setup()
         vim.keymap.set('n', '<leader>ff', builtin.find_files, { desc = 'Telescope find files'})
         vim.keymap.set('n', '<leader>fi', function() builtin.find_files {no_ignore=true} end, { desc = 'Telescope find files'})
         vim.keymap.set('n', '<leader>fm', builtin.marks, { desc = 'Telescope find vim marks'})
