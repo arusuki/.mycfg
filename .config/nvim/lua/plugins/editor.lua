@@ -330,6 +330,28 @@ return {
     "ibhagwan/fzf-lua",
     dependencies = { "nvim-tree/nvim-web-devicons" },
     config = function()
+      require("fzf-lua").setup({
+        fzf_opts = {
+          ["--history"] = vim.fn.stdpath("data") .. "/fzf-lua-history",
+        },
+        keymap = {
+          fzf = {
+            ["ctrl-p"] = "up",
+            ["ctrl-n"] = "down",
+            ["up"] = "previous-history",
+            ["down"] = "next-history",
+          },
+        },
+        winopts = {
+          on_create = function()
+            vim.keymap.set("t", "<C-r>", [['<C-\><C-N>"'.nr2char(getchar()).'pi']], {
+              expr = true,
+              buffer = true,
+              desc = "Paste register",
+            })
+          end,
+        },
+      })
       vim.keymap.set("n", "<leader>fe", "<cmd>FzfLua diagnostics_document<CR>", {})
       vim.keymap.set("n", "<leader>fw", "<cmd>FzfLua diagnostics_workspace<CR>", {})
       vim.keymap.set("n", "<leader>fb", "<cmd>FzfLua buffers<cr>", { desc = 'Telescope buffers' })
