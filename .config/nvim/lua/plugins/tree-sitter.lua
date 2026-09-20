@@ -5,9 +5,9 @@ return {
     branch = "main",
     config = function()
       local ts = require("nvim-treesitter")
-      local ensure_installed = {"lua", "python", "c", "cpp", "cuda", "markdown"}
+      local ensure_installed = require("config.code-filetypes")
 
-      ts.install {"lua", "python", "c", "cpp", "cuda", "markdown"}
+      ts.install(ensure_installed)
 
       vim.api.nvim_create_autocmd('FileType', {
         pattern = ensure_installed,

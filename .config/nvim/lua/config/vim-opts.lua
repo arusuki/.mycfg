@@ -170,23 +170,17 @@ vim.keymap.set("n", "<leader>wo", maxmise_windows)
 
 local trailingWhitespaceGroup = vim.api.nvim_create_augroup('TrailingWhitespace', { clear = true })
 
-local ignored_buftypes = {terminal = true, nofile = true }
-
-local ignored_filetypes = {
-  ['neo-tree'] = true,
-  Trouble = true,
-  trouble = true,
-}
+local code_filetypes = require('config.code-filetypes')
 
 vim.api.nvim_create_autocmd(
-  { 'ColorScheme', 'BufWinEnter', 'WinEnter' },
+  { 'ColorScheme', 'BufWinEnter', 'WinEnter', 'FileType' },
   {
     group = trailingWhitespaceGroup,
     pattern = '*',
     callback = function()
       local buftype = vim.bo.buftype
       local filetype = vim.bo.filetype
-      if ignored_buftypes[buftype] or ignored_filetypes[filetype] then
+      if buftype ~= '' or not vim.tbl_contains(code_filetypes, filetype) then
         if vim.w.trailing_whitespace_match_id then
           pcall(vim.fn.matchdelete, vim.w.trailing_whitespace_match_id, vim.api.nvim_get_current_win())
           vim.w.trailing_whitespace_match_id = nil
