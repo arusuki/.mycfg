@@ -117,16 +117,20 @@ vim.keymap.set('v', "<leader>gF", visual_goto_file)
 
 vim.g.clipboard = "osc52"
 
-local show_signcolumn = true
+
 
 local function toggle_signcolumn()
-  if show_signcolumn then
-    vim.opt.signcolumn = "no"
-  else
-    vim.opt.signcolumn = "auto"
+  local current = vim.wo.signcolumn
+
+  if current:match("^auto") then
+    local signs = vim.fn.sign_getplaced(0, { group = "*" })[1].signs
+    current = #signs > 0 and "yes" or "no"
   end
-  show_signcolumn = not show_signcolumn
+
+  vim.o.signcolumn = current == "yes" and "no" or "yes"
+  vim.wo.signcolumn = vim.o.signcolumn
 end
+
 
 vim.opt.signcolumn = "no"
 vim.keymap.set('n', '<leader>os', toggle_signcolumn)
