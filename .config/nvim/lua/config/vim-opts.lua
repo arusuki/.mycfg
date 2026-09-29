@@ -6,6 +6,15 @@ vim.g.background = "light"
 vim.go.showtabline = 0
 vim.opt.swapfile = false
 
+-- Continue comments with Insert-mode Enter, not Normal-mode o/O.
+vim.opt.formatoptions:remove("o")
+vim.api.nvim_create_autocmd("FileType", {
+  group = vim.api.nvim_create_augroup("CommentContinuation", { clear = true }),
+  callback = function()
+    vim.opt_local.formatoptions:remove("o")
+  end,
+})
+
 vim.keymap.set('n', 'X', ":resize +5<CR>")
 vim.keymap.set('n', 'S', ":resize -5<CR>")
 vim.keymap.set('n', '<C-B>', ":vertical resize +5<CR>")
