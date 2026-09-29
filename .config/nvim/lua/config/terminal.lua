@@ -55,6 +55,10 @@ local group = vim.api.nvim_create_augroup("terminal_file_open", {
 })
 
 local function send_terminal_scroll(buf, button)
+  if vim.bo[buf].buftype ~= "terminal" then
+    return
+  end
+
   local job = vim.b[buf].terminal_job_id
   if not job or vim.fn.jobwait({ job }, 0)[1] ~= -1 then
     return
@@ -87,7 +91,7 @@ vim.api.nvim_create_autocmd("TermRequest", {
 vim.api.nvim_create_autocmd("TermOpen", {
   group = group,
   callback = function(ev)
-    vim.keymap.set("n", "<C-->", function()
+    vim.keymap.set("n", "<C-k>", function()
       send_terminal_scroll(ev.buf, 64)
     end, {
       buffer = ev.buf,
@@ -95,7 +99,7 @@ vim.api.nvim_create_autocmd("TermOpen", {
       nowait = true,
       desc = "Send scroll wheel up to terminal",
     })
-    vim.keymap.set("n", "<C-=>", function()
+    vim.keymap.set("n", "<C-j>", function()
       send_terminal_scroll(ev.buf, 65)
     end, {
       buffer = ev.buf,
