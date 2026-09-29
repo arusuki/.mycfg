@@ -25,10 +25,32 @@ return {
       local pythonPath = os.getenv("PY") or "python"
 
       vim.lsp.config('pyright', {
+        handlers = {
+          ["textDocument/publishDiagnostics"] = function(err, result, ctx, config)
+            if result and result.uri then
+              local path = vim.uri_to_fname(result.uri)
+              path = vim.fs.normalize(vim.uv.fs_realpath(path) or path)
+              local cwd = vim.fn.getcwd()
+              cwd = vim.fs.normalize(vim.uv.fs_realpath(cwd) or cwd)
+              local prefix = cwd:gsub("/+$", "") .. "/"
+
+              -- Keep library navigation/completion, but only show local diagnostics.
+              if path:sub(1, #prefix) ~= prefix
+                or path:find("/site-packages/", 1, true)
+                or path:find("/dist-packages/", 1, true)
+              then
+                -- Publish an empty list to also clear any previous diagnostics.
+                result.diagnostics = {}
+              end
+            end
+            vim.lsp.diagnostic.on_publish_diagnostics(err, result, ctx, config)
+          end,
+        },
         settings = {
           python = {
             analysis = {
               typeCheckingMode = "basic",
+              diagnosticMode = "openFilesOnly",
             },
             pythonPath=pythonPath,
           },
