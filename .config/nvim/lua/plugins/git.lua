@@ -33,7 +33,7 @@ return {
         end))
       end, { desc = 'Browse workspace Git hunks' })
       vim.keymap.set("n", "<leader>gp", ":Gitsigns preview_hunk<CR>", {})
-      vim.keymap.set("n", "<leader>gt", ":Gitsigns toggle_current_line_blame<CR>", {})
+      vim.keymap.set("n", "<leader>gb", ":Gitsigns toggle_current_line_blame<CR>", {})
       vim.keymap.set('n', '<leader>gn', ':Gitsigns next_hunk<CR>')
       vim.keymap.set('n', '<leader>gp', ':Gitsigns prev_hunk<CR>')
       vim.keymap.set('n', '<leader>gw', ':Gitsigns preview_hunk<CR>')
