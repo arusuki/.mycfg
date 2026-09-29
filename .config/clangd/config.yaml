@@ -1,0 +1,14 @@
+# Apply diagnostic preferences to all files.
+Diagnostics:
+  UnusedIncludes: None
+  ClangTidy:
+    Remove: ['*-include-order']
+
+---
+# Clang does not infer the CUDA language from the .cuh extension.
+If:
+  PathMatch:
+    - .*\.cu$
+    - .*\.cuh$
+CompileFlags:
+  Add: [-xcuda, --cuda-gpu-arch=sm_80]
