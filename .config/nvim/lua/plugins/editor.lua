@@ -313,7 +313,9 @@ return {
       vim.keymap.set("n", "<leader>fe", "<cmd>FzfLua diagnostics_document<CR>", {})
       vim.keymap.set("n", "<leader>fw", "<cmd>FzfLua diagnostics_workspace<CR>", {})
       vim.keymap.set("n", "<leader>fb", "<cmd>FzfLua buffers<cr>", { desc = 'Telescope buffers' })
-      vim.keymap.set('n', '<leader>ft', "<cmd>FzfLua treesitter<cr>", { desc = 'Telescope tree sitter'})
+      vim.keymap.set('n', '<leader>ft', function()
+        require("config.treesitter-symbols").open()
+      end, { desc = 'Treesitter symbols' })
     end
   },
   {
