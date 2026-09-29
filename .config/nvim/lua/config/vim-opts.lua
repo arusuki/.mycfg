@@ -147,13 +147,9 @@ for i = 1, 8 do
   })
 end
 
-local maxmise_windows = function()
-  require("util").close_all_other_windows({
-    "Trouble",
-  })
-end
-
-vim.keymap.set("n", "<leader>wo", maxmise_windows)
+local window_layout = require("config.window-layout")
+vim.keymap.set("n", "<leader>wo", window_layout.maximize, { desc = "Maximize window" })
+vim.keymap.set("n", "<leader>wi", window_layout.restore, { desc = "Restore window layout" })
 
 
 local trailingWhitespaceGroup = vim.api.nvim_create_augroup('TrailingWhitespace', { clear = true })
