@@ -3,11 +3,20 @@ return {
     "nvim-treesitter/nvim-treesitter",
     build = ":TSUpdate",
     branch = "main",
+    lazy = false,
     config = function()
       local ts = require("nvim-treesitter")
       local ensure_installed = require("config.code-filetypes")
 
-      ts.install(ensure_installed)
+      -- Install missing parsers first, then update stale versions asynchronously.
+      -- update() compares local revisions and only downloads when they differ.
+      ts.install(ensure_installed):await(vim.schedule_wrap(function(err)
+        if err then
+          vim.notify("Tree-sitter parser installation failed: " .. tostring(err), vim.log.levels.ERROR)
+          return
+        end
+        ts.update(ensure_installed)
+      end))
 
       vim.api.nvim_create_autocmd('FileType', {
         pattern = ensure_installed,
