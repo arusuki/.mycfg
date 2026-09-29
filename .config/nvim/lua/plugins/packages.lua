@@ -70,6 +70,7 @@ return {
       vim.lsp.config('ts_ls', {})
       vim.lsp.config('marksman', {})
       vim.lsp.config('clangd', {cmd={"clangd", "--completion-style=detailed", "-header-insertion=never"}})
+      require("config.tab-lsp").setup({ "pyright", "ruff", "gopls", "ts_ls", "marksman", "clangd" })
 
       vim.keymap.set("n", "gh", vim.lsp.buf.hover, {})
       vim.keymap.set("n", "<leader>gd", vim.lsp.buf.definition, {})
@@ -80,4 +81,3 @@ return {
     end,
   },
 }
-
