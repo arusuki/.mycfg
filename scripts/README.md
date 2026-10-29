@@ -123,6 +123,66 @@ tmux -V
 On Linux, commands should resolve to aqua's `bin` directory; on macOS, they should come
 from Homebrew.
 
+## Neovim Tools, Clipboard and Keymaps
+
+Language servers stay **off by default**. Use `:lsp enable [name]` and
+`:lsp disable [name]` for the current tab. Missing executables produce a warning;
+after installation, retry `:lsp enable name`.
+
+| Tool / LSP config name | Installation responsibility |
+| --- | --- |
+| `ruff`, `pyright`, `marksman` | Mason `ensure_installed` downloads these when Neovim loads the configuration; bootstrap itself only provides their prerequisites, including Node.js. |
+| `gopls` | Optional: `:MasonInstall gopls` (requires Go), or a system installation on PATH. |
+| `ts_ls` | Optional: `:MasonInstall typescript-language-server` (uses Node.js/npm), or a system installation on PATH. |
+| `clangd` | Optional: `:MasonInstall clangd`, or a system installation on PATH. |
+| Python DAP / `debugpy-adapter` | Optional: `:MasonInstall debugpy` (requires Python), or `uv tool install debugpy`; ensure the executable is on PATH. Local launch checks for it on each attempt; remote attach does not require it. |
+
+Python tests default to pytest, which must be installed in the target Python environment.
+`PY` or `:EditVar pythonPath` selects that environment. `:EditVar python_test_runner`
+still works: leaving the editor buffer saves the choice, and the next test uses it.
+
+tmux copy-mode `y` and mouse selection use native OSC 52, matching Neovim's clipboard
+provider. The outer terminal must permit OSC 52. After reloading `.tmux.conf`, check
+`tmux info | grep Ms` and copy text to test pasting in a local application, including
+over SSH. If `Ms` is missing, consult the terminal's capabilities and the
+[tmux clipboard guide](https://github.com/tmux/tmux/wiki/Clipboard) before adding a
+terminal-specific `terminal-features` override. No `pbcopy`, `wl-copy`, or `xclip` is required.
+
+| Keys | Behavior |
+| --- | --- |
+| `<leader>gn` / `<leader>gp` / `<leader>gw` | Next / previous / preview Git hunk. |
+| Insert `<C-b>` / `<C-f>` / `<C-e>` | Move left / right / to end of line, even during completion. |
+| Insert `<C-PageUp>` / `<C-PageDown>` / `<M-e>` | Scroll completion documentation up / down / cancel completion. |
+| Insert `<C-y>` or `<C-Space>` | Open completion manually. |
+| `<leader>ma` / `<leader>ml` | Add the current file and line to Harpoon / open that named list. |
+
+## Configuration Validation
+
+With Neovim plugins already installed, run from the repository root (`$HOME` for the bare checkout):
+
+```sh
+bash scripts/tests/validate.sh
+```
+
+This requires ShellCheck, Lua 5.1 with luacheck and LuaFileSystem (Ubuntu packages
+`shellcheck lua5.1 lua-check`), Python 3, Bash and Zsh. It checks shell syntax/static issues,
+Lua syntax and accidental globals, duplicate literal global `vim.keymap.set` bindings,
+aqua/glibc compatibility, EditVar buffer lifecycle, plugin configuration, and tab-local
+LSP behavior. Dynamic keys and buffer-local mappings are outside the static keymap check;
+the plugin regression also checks cmp/Insert-mode ownership.
+
+CI runs on pushes and pull requests using the Neovim version in `linux/aqua.yaml`
+(currently 0.12.5). `scripts/tests/prepare-nvim.py EMPTY_DIRECTORY` installs the small
+set of test plugins, including scope.nvim, at the revisions in `lazy-lock.json`.
+Set `MYCFG_TEST_PLUGIN_DIR` to that directory to reproduce CI locally; without it,
+validation uses the installed plugins in Neovim's data directory. Test state is temporary.
+
+The updater runs the same checks **after** updating plugins/submodules and **before**
+creating its PR, and includes a link to the validation run. This is necessary because
+[PRs created with the default GITHUB_TOKEN do not trigger ordinary PR workflows](https://github.com/peter-evans/create-pull-request#token).
+The workflow explicitly grants `contents: write` and `pull-requests: write`; repository
+settings must also allow GitHub Actions to create pull requests.
+
 ## Optional uv Installation
 
 In an interactive terminal, `bootstrap.sh` asks whether to install uv; pressing Enter skips

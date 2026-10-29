@@ -100,6 +100,59 @@ tmux -V
 
 Linux 的命令应来自 aqua 的 `bin` 目录，macOS 则来自 Homebrew。
 
+## Neovim 工具、剪贴板与快捷键
+
+语言服务器继续**默认关闭**。使用 `:lsp enable [名称]` 和 `:lsp disable [名称]`
+控制当前 tab。缺少可执行文件时会提示原因，安装后再次执行 `:lsp enable 名称` 即可。
+
+| 工具 / LSP 配置名 | 安装来源 |
+| --- | --- |
+| `ruff`、`pyright`、`marksman` | 加载 Neovim 配置时由 Mason 的 `ensure_installed` 下载；bootstrap 只提供包括 Node.js 在内的基础工具。 |
+| `gopls` | 按需执行 `:MasonInstall gopls`（需要 Go），或自行安装并加入 PATH。 |
+| `ts_ls` | 按需执行 `:MasonInstall typescript-language-server`（使用 Node.js/npm），或自行安装并加入 PATH。 |
+| `clangd` | 按需执行 `:MasonInstall clangd`，或自行安装并加入 PATH。 |
+| Python DAP / `debugpy-adapter` | 按需执行 `:MasonInstall debugpy`（需要 Python），或 `uv tool install debugpy`，确保可执行文件位于 PATH。每次本地启动调试都会检查；远程 attach 不需要本地 adapter。 |
+
+Python 测试默认使用 pytest，需在目标 Python 环境中安装。`PY` 或 `:EditVar pythonPath`
+用于选择目标环境。保留 `:EditVar python_test_runner`：离开编辑 buffer 后保存，下一次测试立即使用新值。
+
+tmux copy-mode 的 `y` 和鼠标选择改用原生 OSC 52，与 Neovim 的剪贴板机制一致。
+外层终端需要允许 OSC 52。重载 `.tmux.conf` 后，先运行 `tmux info | grep Ms`，
+再复制文本并尝试粘贴到本地应用，也应在 SSH 场景下验证。如果没有 `Ms`，请参考终端能力和
+[tmux 剪贴板文档](https://github.com/tmux/tmux/wiki/Clipboard)，再按终端类型配置
+`terminal-features`。无需安装 `pbcopy`、`wl-copy` 或 `xclip`。
+
+| 快捷键 | 行为 |
+| --- | --- |
+| `<leader>gn` / `<leader>gp` / `<leader>gw` | 下一个 / 上一个 / 预览 Git hunk。 |
+| Insert `<C-b>` / `<C-f>` / `<C-e>` | 左移 / 右移 / 到行尾，补全期间也保留移动功能。 |
+| Insert `<C-PageUp>` / `<C-PageDown>` / `<M-e>` | 向上 / 向下滚动补全文档 / 取消补全。 |
+| Insert `<C-y>` 或 `<C-Space>` | 手动打开补全。 |
+| `<leader>ma` / `<leader>ml` | 将当前文件与行号加入 Harpoon / 打开该列表。 |
+
+## 配置验证
+
+已安装 Neovim 插件时，可在仓库根目录（bare checkout 即 `$HOME`）运行：
+
+```sh
+bash scripts/tests/validate.sh
+```
+
+需要 ShellCheck、带 luacheck 和 LuaFileSystem 的 Lua 5.1（Ubuntu 包为
+`shellcheck lua5.1 lua-check`）、Python 3、Bash 和 Zsh。检查包括 Shell 静态问题、Lua 语法和意外全局变量、
+字面量形式的全局 `vim.keymap.set` 重复绑定、aqua/glibc 兼容性、EditVar buffer 生命周期、
+插件配置和 tab-local LSP 回归。动态按键及 buffer-local 映射不属于静态重复检查的范围；
+插件回归另行检查 cmp 与 Insert 移动按键的归属。
+
+CI 在 push 和 PR 时执行，使用 `linux/aqua.yaml` 中固定的 Neovim 版本（当前为 0.12.5）。
+`scripts/tests/prepare-nvim.py 空目录` 按 `lazy-lock.json` 安装测试所需的少量插件，包括 scope.nvim。
+将 `MYCFG_TEST_PLUGIN_DIR` 指向该目录即可在本地复现 CI；不设置时使用 Neovim 数据目录中的已安装插件。
+测试状态保存在临时目录，不影响日常数据。
+
+自动更新流程会在更新插件和 submodule **之后**、创建 PR **之前**运行相同检查，并在 PR 中附上运行链接。
+这是因为[默认 GITHUB_TOKEN 创建的 PR 不会触发普通 PR workflow](https://github.com/peter-evans/create-pull-request#token)。
+workflow 已显式声明 `contents: write` 和 `pull-requests: write`；仓库设置也需要允许 GitHub Actions 创建 PR。
+
 ## 可选 uv
 
 `bootstrap.sh` 在交互终端中询问是否安装 uv，回车默认跳过。
