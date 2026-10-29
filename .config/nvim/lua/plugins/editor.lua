@@ -267,18 +267,29 @@ return {
           }
         end,
 
-        select = function(list_item, list, option)
-          vim.cmd("edit " .. list_item.context.file_path)
-
-          vim.api.nvim_win_set_cursor(0, { list_item.context.line_number, 0 })
+        select = function(list_item)
+          if not list_item then
+            return
+          end
+          vim.cmd({
+            cmd = "edit",
+            args = { list_item.context.file_path },
+            magic = { file = false, bar = false },
+          })
+          local line = math.min(list_item.context.line_number, vim.api.nvim_buf_line_count(0))
+          vim.api.nvim_win_set_cursor(0, { line, 0 })
         end,
       },
     },
-    config = function()
+    config = function(_, opts)
       local harpoon = require("harpoon")
-
-      harpoon:setup()
-
+      harpoon:setup(opts)
+      vim.keymap.set("n", "<leader>ma", function()
+        harpoon:list("file_with_line"):add()
+      end, { desc = "Harpoon: add file and line" })
+      vim.keymap.set("n", "<leader>ml", function()
+        harpoon.ui:toggle_quick_menu(harpoon:list("file_with_line"))
+      end, { desc = "Harpoon: file and line list" })
     end
   },
   {
