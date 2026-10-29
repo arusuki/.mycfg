@@ -17,7 +17,6 @@ return {
       local cmp = require("cmp")
       local luasnip = require("luasnip")
       require("luasnip.loaders.from_vscode").lazy_load()
-      vim.keymap.set('i', '<C-y>', function() cmp.complete() end)
       cmp.setup({
         completion = {autocomplete=false},
         snippet = {
@@ -29,11 +28,30 @@ return {
           completion = cmp.config.window.bordered(),
           documentation = cmp.config.window.bordered(),
         },
-        mapping = cmp.mapping.preset.insert({
-          ["<C-b>"] = cmp.mapping.scroll_docs(-4),
-          ["<C-f>"] = cmp.mapping.scroll_docs(4),
+        -- Keep C-b/C-f/C-e owned by config.insert-ops, including with a menu open.
+        -- Avoid preset.insert(), which also installs C-e and C-y mappings.
+        mapping = {
+          ["<C-PageUp>"] = cmp.mapping.scroll_docs(-4),
+          ["<C-PageDown>"] = cmp.mapping.scroll_docs(4),
           ["<C-Space>"] = cmp.mapping.complete(),
-          ["<C-e>"] = cmp.mapping.abort(),
+          ["<C-y>"] = cmp.mapping.complete(),
+          ["<M-e>"] = cmp.mapping.abort(),
+          ["<C-n>"] = cmp.mapping(function()
+            if cmp.visible() then
+              cmp.select_next_item({ behavior = cmp.SelectBehavior.Insert })
+            else
+              cmp.complete()
+            end
+          end),
+          ["<C-p>"] = cmp.mapping(function()
+            if cmp.visible() then
+              cmp.select_prev_item({ behavior = cmp.SelectBehavior.Insert })
+            else
+              cmp.complete()
+            end
+          end),
+          ["<Down>"] = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Select }),
+          ["<Up>"] = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Select }),
           ["<CR>"] = cmp.mapping.confirm({ select = true }),
           ["<Tab>"] = cmp.mapping(function(fallback)
             if cmp.visible() then
@@ -53,7 +71,7 @@ return {
               fallback()
             end
           end, { "i", "s" }),
-        }),
+        },
         sources = cmp.config.sources({
           { name = "nvim_lsp" },
           { name = "luasnip" }, -- For luasnip users.
