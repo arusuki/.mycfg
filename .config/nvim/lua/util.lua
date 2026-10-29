@@ -3,13 +3,13 @@ local _vars = {}
 
 M.vars = _vars
 
-_buffers = {}
+local _buffers = {}
 
 M.edit_var = function(opts)
   local var_name = opts.fargs[1]
   local content = _vars[var_name] or {}
   local buf = _buffers[var_name]
-  if buf == nil then
+  if buf == nil or not vim.api.nvim_buf_is_valid(buf) then
     buf = vim.api.nvim_create_buf(true, true)
     vim.api.nvim_buf_set_name(buf, "var://" .. var_name)
     vim.api.nvim_set_option_value("swapfile", false, {buf=buf})
@@ -53,17 +53,18 @@ M.get_visual_selected_text = function(line_delim)
   return table.concat(lines, line_delim or "\n")
 end
 
-terminal_group = vim.api.nvim_create_augroup('util_values', {})
+local terminal_group = vim.api.nvim_create_augroup('util_values', { clear = true })
 vim.api.nvim_create_autocmd('BufLeave', {
   group = terminal_group,
   desc = 'change utils.vars on leaf',
   pattern = 'var://*',
-  callback = function()
-    local bufname = vim.fn.bufname("%")
-    local bufnr = vim.fn.bufnr("%")
-    local var_name = string.match(bufname, "var://(.*)")
+  callback = function(ev)
+    local var_name = vim.api.nvim_buf_get_name(ev.buf):match("^var://(.+)$")
+    if not var_name then
+      return
+    end
     vim.notify(string.format("setvars: %s", var_name))
-    local cont = vim.api.nvim_buf_get_lines(bufnr, 0, -1, true)
+    local cont = vim.api.nvim_buf_get_lines(ev.buf, 0, -1, true)
     _vars[var_name] = cont
   end,
 })
@@ -72,14 +73,16 @@ vim.api.nvim_create_autocmd('BufDelete', {
   group = terminal_group,
   desc = 'remove buffer from internal _buffers table on delete',
   pattern = 'var://*',
-  callback = function()
-    local bufname = vim.fn.bufname("%")
-    _buffers[bufname] = nil
+  callback = function(ev)
+    local var_name = vim.api.nvim_buf_get_name(ev.buf):match("^var://(.+)$")
+    if var_name and _buffers[var_name] == ev.buf then
+      _buffers[var_name] = nil
+    end
   end,
 })
 
 
-function completion(ArgLead, CmdLine, CursorPos)
+local function completion()
   return vim.tbl_keys(_vars)
 end
 
@@ -89,7 +92,7 @@ vim.api.nvim_create_user_command('EditVar', M.edit_var, { desc = 'pass', nargs=1
 vim.keymap.set('n', '<leader>vv', ":below split | resize 5 | set winfixheight | EditVar ", { desc = 'Telescope help tags' })
 _vars.pythonPath = {"python"}
 
-function clear_terminal()
+local function clear_terminal()
   local scrollback = vim.bo.scrollback
   vim.bo.scrollback = 1
   local keys = vim.api.nvim_replace_termcodes("a<C-L><C-Q>", true, false, true)

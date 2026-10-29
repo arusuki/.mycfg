@@ -1,0 +1,27 @@
+-- Run from .config/nvim: nvim --clean -l tests/util.lua
+vim.opt.rtp:prepend(vim.fn.getcwd())
+local util = require("util")
+util.set_var("test_value", { "initial" })
+vim.cmd("EditVar test_value")
+local first = vim.api.nvim_get_current_buf()
+vim.api.nvim_buf_set_lines(first, 0, -1, true, { "updated", "# ignored", "" })
+vim.cmd("enew")
+assert(vim.deep_equal(util.get_var("test_value"), { "updated" }), "leaving must save edited values")
+vim.cmd("EditVar test_value")
+local second = vim.api.nvim_get_current_buf()
+assert(second ~= first, "deleted variable buffers must be recreated")
+assert(vim.api.nvim_get_current_line() == "", "reopening must preserve the full edited content")
+assert(vim.api.nvim_buf_get_lines(second, 0, 1, true)[1] == "updated")
+
+-- Delete a hidden variable buffer while another buffer is current.
+vim.bo[second].bufhidden = "hide"
+vim.cmd("enew")
+vim.api.nvim_buf_delete(second, { force = true })
+vim.cmd("EditVar test_value")
+local third = vim.api.nvim_get_current_buf()
+assert(third ~= second, "cleanup must use the event buffer, not the current buffer")
+vim.api.nvim_buf_delete(third, { force = true })
+vim.cmd("EditVar test_value")
+assert(vim.api.nvim_buf_get_lines(0, 0, 1, true)[1] == "updated", "wipeout must allow reopening")
+assert(_G._buffers == nil and _G.terminal_group == nil, "util must not leak internal state")
+print("PASS: EditVar save, delete, hidden delete, wipeout and reopen")

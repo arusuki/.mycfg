@@ -55,7 +55,7 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   end,
 })
 
-terminal_group = vim.api.nvim_create_augroup('terminal_event', {})
+local terminal_group = vim.api.nvim_create_augroup('terminal_event', {})
 
 local function is_top_level_window()
   local layout = vim.fn.winlayout()
