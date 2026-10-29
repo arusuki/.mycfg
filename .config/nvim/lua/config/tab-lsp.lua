@@ -5,6 +5,7 @@ local enabled, clients = {}, {}
 local configured = {}
 local generation = 0
 local queued = false
+local missing_commands = {}
 
 local function matches(config, buf)
   return vim.api.nvim_buf_is_loaded(buf)
@@ -101,8 +102,17 @@ function M.refresh()
               return
             end
             if type(config.cmd) == "table" and vim.fn.executable(config.cmd[1]) == 0 then
+              if missing_commands[name] ~= config.cmd[1] then
+                missing_commands[name] = config.cmd[1]
+                vim.notify(
+                  "LSP " .. name .. " unavailable: " .. config.cmd[1]
+                    .. " not found on PATH. See :Mason or scripts/README.md for installation.",
+                  vim.log.levels.WARN
+                )
+              end
               return
             end
+            missing_commands[name] = nil
             -- Re-enable diagnostics before didOpen can deliver new results.
             for id in pairs(clients) do
               local client = vim.lsp.get_client_by_id(id)
@@ -148,6 +158,8 @@ function M.enable(names, enable)
   enabled[tab] = enabled[tab] or {}
   for _, name in ipairs(names) do
     enabled[tab][name] = enable ~= false and true or nil
+    -- An explicit retry should report a still-missing executable again.
+    missing_commands[name] = nil
   end
   M.refresh()
 end

@@ -1,6 +1,6 @@
 -- Run: nvim --clean -l tests/tab-lsp.lua
 vim.opt.rtp:prepend(vim.fn.getcwd())
-vim.opt.rtp:append(vim.fn.stdpath("data") .. "/lazy/scope.nvim")
+vim.opt.rtp:append((vim.env.MYCFG_TEST_PLUGIN_DIR or (vim.fn.stdpath("data") .. "/lazy")) .. "/scope.nvim")
 require("scope").setup({})
 vim.o.hidden = true
 
@@ -136,6 +136,28 @@ vim.cmd("lsp disable tab_slow")
 vim.wait(200, function() return false end, 5)
 check(#vim.lsp.get_clients({ bufnr = a }) == 0, "late initialization must not reattach disabled buffers")
 
+-- Missing executables must explain the no-op, without warning on every refresh.
+local notifications = {}
+local notify = vim.notify
+vim.notify = function(message, level)
+  notifications[#notifications + 1] = { message = message, level = level }
+end
+vim.lsp.config("tab_missing", { cmd = { "mycfg-nonexistent-language-server" }, filetypes = { "tab_test" } })
+vim.cmd("lsp enable tab_missing")
+settle()
+check(#notifications == 1, "missing server must warn once")
+check(notifications[1].level == vim.log.levels.WARN, "missing server must use WARN")
+check(notifications[1].message:find("tab_missing", 1, true)
+  and notifications[1].message:find("mycfg-nonexistent-language-server", 1, true), "warning must identify server and executable")
+require("config.tab-lsp").refresh()
+settle()
+check(#notifications == 1, "automatic refresh must not repeat warnings")
+vim.cmd("lsp enable tab_missing")
+settle()
+check(#notifications == 2, "explicit enable must retry and warn")
+vim.cmd("lsp disable tab_missing")
+vim.notify = notify
+
 for _, client in ipairs(vim.lsp.get_clients()) do client:stop(true) end
 vim.fn.delete(root, "rf")
-print("PASS: tab defaults, commands, scope membership, client reuse, shared buffers, async roots, cleanup")
+print("PASS: tab defaults, commands, scope membership, client reuse, shared buffers, async roots, cleanup, missing server")
