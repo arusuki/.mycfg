@@ -1,0 +1,21 @@
+name: Validate Dotfiles
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-validation
+      - name: Validate configuration with locked plugins
+        shell: bash
+        run: |
+          export MYCFG_TEST_PLUGIN_DIR
+          MYCFG_TEST_PLUGIN_DIR=$(mktemp -d)
+          trap 'rm -rf "$MYCFG_TEST_PLUGIN_DIR"' EXIT
+          python3 scripts/tests/prepare-nvim.py "$MYCFG_TEST_PLUGIN_DIR"
+          bash scripts/tests/validate.sh

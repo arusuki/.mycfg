@@ -6,6 +6,9 @@ on:
       - main
   schedule:
     - cron: '0 0 * * 0'
+permissions:
+  contents: write
+  pull-requests: write
 jobs:
   update:
     runs-on: ubuntu-latest
@@ -13,19 +16,15 @@ jobs:
       - name: Checkout dotfiles repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0 
+          fetch-depth: 0
           submodules: 'recursive'
 
-      - name: Install Neovim
-        uses: rhysd/action-setup-vim@v1
-        with:
-          neovim: true
-          version: 'stable'
+      - uses: ./.github/actions/setup-validation
 
       - name: Link Neovim Config
         run: |
           mkdir -p ~/.config
-          ln -s $GITHUB_WORKSPACE/.config/nvim ~/.config/nvim
+          ln -s "$GITHUB_WORKSPACE/.config/nvim" ~/.config/nvim
 
       - name: Update Neovim Plugins (Lazy)
         run: |
@@ -35,23 +34,37 @@ jobs:
       - name: Update all submodules to the latest commit
         run: |
           git submodule update --remote
+      # GITHUB_TOKEN-created PRs do not trigger pull_request workflows.
+      # Validate the updated lockfile here before publishing the update PR.
+      - name: Validate updated configuration
+        shell: bash
+        run: |
+          export MYCFG_TEST_PLUGIN_DIR
+          MYCFG_TEST_PLUGIN_DIR=$(mktemp -d)
+          trap 'rm -rf "$MYCFG_TEST_PLUGIN_DIR"' EXIT
+          python3 scripts/tests/prepare-nvim.py "$MYCFG_TEST_PLUGIN_DIR"
+          bash scripts/tests/validate.sh
       - name: Create Pull Request if changes were found
-        uses: peter-evans/create-pull-request@v6
+        uses: peter-evans/create-pull-request@v8
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          commit-message: "chore: Automated submodule updates"
+          commit-message: "chore: update Neovim plugins and submodules"
           committer: "GitHub Actions Bot <actions@github.com>"
           author: "GitHub Actions Bot <actions@github.com>"
           
-          title: "[Bot] Update Submodules"
+          title: "[Bot] Update Neovim plugins and submodules"
           body: |
-            This is an auto-generated PR to update the submodules in the dotfiles repository.
+            This PR updates Neovim plugin versions and Git submodules.
             
             - Oh-My-Zsh
             - Neovim plugins
             - Other submodules
             
-            Please review the changes and merge if they are acceptable.
+            Shell/Lua static checks, duplicate-keymap checks, aqua compatibility checks,
+            and Neovim regressions passed against the updated lazy-lock.json before
+            this PR was created. Neovim uses the version in scripts/linux/aqua.yaml.
+
+            Validation run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           
           branch: "bot/auto-update-dotfiles"
           
