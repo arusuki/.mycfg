@@ -88,49 +88,73 @@ vim.api.nvim_create_autocmd("TermRequest", {
   end,
 })
 
+local function configure_terminal(buf)
+  -- Reloading this file must also update terminals that are already open.
+  local old_scroll_maps = {
+    ["<C-k>"] = "Send scroll wheel up to terminal",
+    ["<C-j>"] = "Send scroll wheel down to terminal",
+  }
+  for key, desc in pairs(old_scroll_maps) do
+    local mapping = vim.api.nvim_buf_call(buf, function()
+      return vim.fn.maparg(key, "n", false, true)
+    end)
+    if mapping.buffer == 1 and mapping.desc == desc then
+      vim.keymap.del("n", key, { buffer = buf })
+    end
+  end
+
+  vim.keymap.set("n", "K", function()
+    send_terminal_scroll(buf, 64)
+  end, {
+    buffer = buf,
+    silent = true,
+    nowait = true,
+    desc = "Send scroll wheel up to terminal",
+  })
+  vim.keymap.set("n", "J", function()
+    send_terminal_scroll(buf, 65)
+  end, {
+    buffer = buf,
+    silent = true,
+    nowait = true,
+    desc = "Send scroll wheel down to terminal",
+  })
+
+  vim.keymap.set("n", "<CR>", function()
+    local file = vim.fn.expand("<cfile>")
+
+    if file == "" then
+      return
+    end
+
+    local cwd = vim.b[buf].osc7_dir or vim.fn.getcwd()
+
+    local path
+    if file:sub(1, 1) == "/" then
+      path = file
+    else
+      path = cwd .. "/" .. file
+    end
+
+    if vim.fn.filereadable(path) == 1 then
+      vim.cmd.edit(vim.fn.fnameescape(path))
+    end
+  end, {
+    buffer = buf,
+    silent = true,
+    desc = "Open terminal file under cursor",
+  })
+end
+
 vim.api.nvim_create_autocmd("TermOpen", {
   group = group,
   callback = function(ev)
-    vim.keymap.set("n", "<C-k>", function()
-      send_terminal_scroll(ev.buf, 64)
-    end, {
-      buffer = ev.buf,
-      silent = true,
-      nowait = true,
-      desc = "Send scroll wheel up to terminal",
-    })
-    vim.keymap.set("n", "<C-j>", function()
-      send_terminal_scroll(ev.buf, 65)
-    end, {
-      buffer = ev.buf,
-      silent = true,
-      nowait = true,
-      desc = "Send scroll wheel down to terminal",
-    })
-
-    vim.keymap.set("n", "<CR>", function()
-      local file = vim.fn.expand("<cfile>")
-
-      if file == "" then
-        return
-      end
-
-      local cwd = vim.b[ev.buf].osc7_dir or vim.fn.getcwd()
-
-      local path
-      if file:sub(1, 1) == "/" then
-        path = file
-      else
-        path = cwd .. "/" .. file
-      end
-
-      if vim.fn.filereadable(path) == 1 then
-        vim.cmd.edit(vim.fn.fnameescape(path))
-      end
-    end, {
-      buffer = ev.buf,
-      silent = true,
-      desc = "Open terminal file under cursor",
-    })
+    configure_terminal(ev.buf)
   end,
 })
+
+for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+  if vim.api.nvim_buf_is_loaded(buf) and vim.bo[buf].buftype == "terminal" then
+    configure_terminal(buf)
+  end
+end
