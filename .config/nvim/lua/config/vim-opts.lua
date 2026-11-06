@@ -5,6 +5,7 @@ vim.cmd("set shiftwidth=2")
 vim.g.background = "light"
 vim.go.showtabline = 0
 vim.opt.swapfile = false
+vim.opt.splitbelow = true
 
 -- Continue comments with Insert-mode Enter, not Normal-mode o/O.
 vim.opt.formatoptions:remove("o")

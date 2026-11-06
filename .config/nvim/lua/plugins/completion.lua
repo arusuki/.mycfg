@@ -86,6 +86,18 @@ return {
     "arusuki/suggestions.nvim",
     lazy = false,
     opts = {
+      keys = {
+        word_left = false, -- Word movement is handled by config.insert-ops.
+      },
+      input = {
+        rules = {
+          {
+            prompt = "^Compile command:",
+            enabled = true,
+            completion = "shell",
+          },
+        },
+      },
       highlights = {
         match = { fg = "#ff6E00", bold = true, underline = true },
         selected_match = { fg = "#ff6E00", bold = true, underline = true },
