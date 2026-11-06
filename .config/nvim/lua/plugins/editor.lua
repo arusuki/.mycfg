@@ -183,9 +183,9 @@ return {
   },
   {
     'smoka7/hop.nvim', version = "*", opts = { keys = 'etovxqpdygfblzhckisuran'},
-    config = function()
+    config = function(_, opts)
       local hop = require('hop')
-      hop.setup { keys = 'etovxqpdygfblzhckisuran' }
+      hop.setup(opts)
 
       vim.keymap.set('n', '<leader>h', ":HopWord<CR>", {remap=true})
       vim.keymap.set('n', '<leader>j', ":HopWordMW<CR>", {remap=true})

@@ -86,8 +86,6 @@ local function completion()
   return vim.tbl_keys(_vars)
 end
 
-_G.UtilVarsCompletion = completion
-
 vim.api.nvim_create_user_command('EditVar', M.edit_var, { desc = 'pass', nargs=1, complete = completion})
 vim.keymap.set('n', '<leader>vv', ":below split | resize 5 | set winfixheight | EditVar ", { desc = 'Telescope help tags' })
 _vars.pythonPath = {"python"}

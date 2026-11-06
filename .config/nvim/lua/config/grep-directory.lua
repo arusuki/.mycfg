@@ -56,7 +56,7 @@ function M.grep(path)
 end
 
 local function input_directory()
-  -- Use command-line prompts so wilder-fzf can complete directories.
+  -- Use command-line prompts to retain native directory completion.
   local command = ":GrepDir " .. vim.fn.fnameescape(vim.fn.getcwd() .. "/")
   vim.api.nvim_feedkeys(command, "n", true)
 end

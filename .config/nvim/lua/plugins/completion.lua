@@ -83,29 +83,14 @@ return {
     end,
   },
   {
-    "arusuki/wilder.nvim",
-    init = function(plugin)
-      vim.opt.rtp:append(plugin.dir .. "/wilder-fzf")
-    end,
-
-    config = function()
-        local wilder_fzf = require('wilder_fzf')
-        wilder_fzf.setup({
-          highlights = {
-            accent = wilder_fzf.make_hl('WilderFzfPink', 'Pmenu', {
-              foreground = '#ff6E00',
-              bold = true,
-              underline = true,
-            }),
-            selected_accent = wilder_fzf.make_hl('WilderFzfSelectedPink', 'PmenuSel', {
-              foreground = '#ff6E00',
-              bold = true,
-              underline = true,
-            }),
-          },
-        })
-    end,
+    "arusuki/suggestions.nvim",
     lazy = false,
+    opts = {
+      highlights = {
+        match = { fg = "#ff6E00", bold = true, underline = true },
+        selected_match = { fg = "#ff6E00", bold = true, underline = true },
+      },
+    },
   },
 }
 
