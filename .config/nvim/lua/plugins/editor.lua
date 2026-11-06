@@ -164,6 +164,12 @@ return {
       vim.keymap.set("n", "<leader>ob", ":Neotree buffers reveal float<CR>", {})
       vim.keymap.set("n", "<leader>og", ":Neotree git_status reveal float<CR>", {})
       require("neo-tree").setup({
+          filesystem = {
+            follow_current_file = {
+              enabled = true,
+              leave_dirs_open = false,
+            },
+          },
           sources = {
             "filesystem",
             "buffers",
