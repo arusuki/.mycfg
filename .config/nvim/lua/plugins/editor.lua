@@ -55,58 +55,6 @@ return {
     vim.cmd('colorscheme github_dark')
   end,
   },
-  { 'nvim-telescope/telescope-fzf-native.nvim', build = 'make' },
-  {
-    'nvim-telescope/telescope.nvim',
-     config = function()
-        local actions = require("telescope.actions")
-        require('telescope').setup(
-        {
-          defaults = {
-            mappings = {
-              i = {
-                ["<C-Down>"] = actions.cycle_history_next,
-                ["<C-Up>"] = actions.cycle_history_prev,
-              }
-            }
-          },
-          pickers = {
-            find_files = {
-              theme = "ivy"
-            },
-            live_grep = {
-              theme = "ivy"
-            },
-            grep_string = {
-              theme = "ivy"
-            },
-          }
-        }
-        )
-        require('telescope').load_extension('fzf')
-        local builtin = require('telescope.builtin')
-        local util = require('util')
-        local themes = require('telescope.themes')
-        util.vars.rg_args = {}
-        require('config.grep-directory').setup()
-        vim.keymap.set('n', '<leader>ff', builtin.find_files, { desc = 'Telescope find files'})
-        vim.keymap.set('n', '<leader>fi', function() builtin.find_files {no_ignore=true} end, { desc = 'Telescope find files'})
-        vim.keymap.set('n', '<leader>fm', builtin.marks, { desc = 'Telescope find vim marks'})
-        vim.keymap.set('n', '<leader>fh', builtin.help_tags, { desc = 'Lists available help tags'})
-        vim.keymap.set('n', '<leader>fq', builtin.quickfix, { desc = 'Telescope quick fix'})
-
-        vim.keymap.set('n', '<leader>fg', function()
-          builtin.live_grep {additional_args=util.get_var("rg_args")}
-        end, { desc = 'Telescope live grep'})
-        vim.keymap.set('n', '<leader>fz', builtin.current_buffer_fuzzy_find, { desc = 'Telescope help tags' })
-        vim.keymap.set('v', '<leader>fg', function()
-          local selected = util.get_visual_selected_text()
-          builtin.grep_string { search=selected, additional_args=util.get_var("rg_args") }
-        end,
-        { desc = 'Telescope find files in visual mode' }
-      )
-   end,
-  },
   {
     'nvim-lualine/lualine.nvim',
     dependencies = { 'nvim-tree/nvim-web-devicons' },
@@ -299,7 +247,13 @@ return {
     "ibhagwan/fzf-lua",
     dependencies = { "nvim-tree/nvim-web-devicons" },
     config = function()
-      require("fzf-lua").setup({
+      local fzf = require("fzf-lua")
+      local grep = require("config.fzf-grep")
+      local util = require("util")
+      util.vars.rg_args = util.vars.rg_args or {}
+      fzf.setup({
+        files = { hidden = false, winopts = { row = 1, width = 1, height = 0.4 } },
+        grep = { winopts = { row = 1, width = 1, height = 0.4 } },
         fzf_opts = {
           ["--history"] = vim.fn.stdpath("data") .. "/fzf-lua-history",
         },
@@ -309,6 +263,8 @@ return {
             ["ctrl-n"] = "down",
             ["up"] = "previous-history",
             ["down"] = "next-history",
+            ["ctrl-up"] = "previous-history",
+            ["ctrl-down"] = "next-history",
           },
         },
         winopts = {
@@ -321,9 +277,24 @@ return {
           end,
         },
       })
+      require("config.grep-directory").setup()
+      vim.keymap.set("n", "<leader>ff", fzf.files, { desc = "Find files" })
+      vim.keymap.set("n", "<leader>fi", function()
+        fzf.files({ no_ignore = true })
+      end, { desc = "Find files including ignored files" })
+      vim.keymap.set("n", "<leader>fm", fzf.marks, { desc = "Find Vim marks" })
+      vim.keymap.set("n", "<leader>fh", fzf.helptags, { desc = "Lists available help tags" })
+      vim.keymap.set("n", "<leader>fq", fzf.quickfix, { desc = "Browse quickfix" })
+      vim.keymap.set("n", "<leader>fg", function()
+        fzf.live_grep(grep.opts())
+      end, { desc = "Live grep" })
+      vim.keymap.set("v", "<leader>fg", function()
+        fzf.grep_visual(grep.opts())
+      end, { desc = "Grep visual selection" })
+      vim.keymap.set("n", "<leader>fz", fzf.blines, { desc = "Search current buffer" })
       vim.keymap.set("n", "<leader>fe", "<cmd>FzfLua diagnostics_document<CR>", {})
       vim.keymap.set("n", "<leader>fw", "<cmd>FzfLua diagnostics_workspace<CR>", {})
-      vim.keymap.set("n", "<leader>fb", "<cmd>FzfLua buffers<cr>", { desc = 'Telescope buffers' })
+      vim.keymap.set("n", "<leader>fb", "<cmd>FzfLua buffers<cr>", { desc = 'Browse buffers' })
       vim.keymap.set('n', '<leader>ft', function()
         require("config.treesitter-symbols").open()
       end, { desc = 'Treesitter symbols' })
@@ -336,6 +307,7 @@ return {
       {"ibhagwan/fzf-lua"},
     },
     config = function()
+      require("scratch").setup({ file_picker = "fzflua" })
       vim.keymap.set("n", "<leader>sr", "<cmd>Scratch<cr>")
       vim.keymap.set("n", "<leader>sor", "<cmd>ScratchOpen<cr>")
     end

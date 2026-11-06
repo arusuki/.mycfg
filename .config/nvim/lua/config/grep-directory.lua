@@ -48,11 +48,10 @@ function M.grep(path)
     end
   end
   save_history(history)
-  require("telescope.builtin").live_grep({
+  require("fzf-lua").live_grep(require("config.fzf-grep").opts({
     cwd = path,
-    prompt_title = "Grep: " .. path,
-    additional_args = require("util").get_var("rg_args"),
-  })
+    winopts = { title = "Grep: " .. path },
+  }))
 end
 
 local function input_directory()
@@ -62,54 +61,47 @@ local function input_directory()
 end
 
 function M.pick()
-  local actions = require("telescope.actions")
-  local action_state = require("telescope.actions.state")
-  local entries = directories()
   local new_directory = "[New directory…]"
-  entries[#entries + 1] = new_directory
-  local opts = require("telescope.themes").get_dropdown({ previewer = false })
-  require("telescope.pickers").new(opts, {
-    prompt_title = "Grep directory (<C-o>: new, <C-x>: remove)",
-    finder = require("telescope.finders").new_table({ results = entries }),
-    sorter = require("telescope.config").values.generic_sorter(opts),
-    attach_mappings = function(prompt_bufnr, map)
-      local function new()
-        actions.close(prompt_bufnr)
-        vim.schedule(input_directory)
-      end
-      actions.select_default:replace(function()
-        local entry = action_state.get_selected_entry()
-        if not entry then
+  local function new()
+    vim.schedule(input_directory)
+  end
+  require("fzf-lua").fzf_exec(function(cb)
+    for _, dir in ipairs(directories()) do
+      cb(dir)
+    end
+    cb(new_directory)
+    cb(nil)
+  end, {
+    prompt = "Grep directory> ",
+    winopts = { title = "Grep directory", width = 0.7, height = 0.4 },
+    previewer = false,
+    fzf_opts = { ["--no-multi"] = true },
+    actions = {
+      ["enter"] = function(selected)
+        if not selected[1] then
           return
         end
-        if entry.value == new_directory then
+        if selected[1] == new_directory then
           new()
         else
-          actions.close(prompt_bufnr)
-          vim.schedule(function() M.grep(entry.value) end)
+          vim.schedule(function() M.grep(selected[1]) end)
         end
-      end)
-      map({ "i", "n" }, "<C-o>", new)
-      map({ "i", "n" }, "<C-x>", function()
-        local entry = action_state.get_selected_entry()
-        if not entry or entry.value == new_directory then
-          return
-        end
-        local history = vim.tbl_filter(function(dir)
-          return dir ~= entry.value
-        end, directories())
-        if not save_history(history) then
-          return
-        end
-        local results = vim.list_extend(history, { new_directory })
-        action_state.get_current_picker(prompt_bufnr):refresh(
-          require("telescope.finders").new_table({ results = results }),
-          { reset_prompt = false }
-        )
-      end, { desc = "Remove directory from grep history" })
-      return true
-    end,
-  }):find()
+      end,
+      ["ctrl-o"] = { fn = new, desc = "New directory" },
+      ["ctrl-x"] = {
+        fn = function(selected)
+          if not selected[1] or selected[1] == new_directory then
+            return
+          end
+          save_history(vim.tbl_filter(function(dir)
+            return dir ~= selected[1]
+          end, directories()))
+        end,
+        reload = true,
+        desc = "Remove directory from history",
+      },
+    },
+  })
 end
 
 function M.setup()

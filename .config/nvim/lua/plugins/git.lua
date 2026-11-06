@@ -16,7 +16,7 @@ return {
             vim.notify('当前文件没有可显示的 Git hunks', vim.log.levels.INFO)
             return
           end
-          require('telescope.builtin').quickfix({ prompt_title = 'Current File Git Hunks' })
+          require('fzf-lua').quickfix({ winopts = { title = 'Current File Git Hunks' } })
         end))
       end, { desc = 'Browse current file Git hunks' })
       vim.keymap.set('n', '<leader>gH', function()
@@ -29,7 +29,7 @@ return {
             vim.notify('当前工作区没有可显示的 Git hunks', vim.log.levels.INFO)
             return
           end
-          require('telescope.builtin').quickfix({ prompt_title = 'Workspace Git Hunks' })
+          require('fzf-lua').quickfix({ winopts = { title = 'Workspace Git Hunks' } })
         end))
       end, { desc = 'Browse workspace Git hunks' })
       vim.keymap.set("n", "<leader>gb", ":Gitsigns toggle_current_line_blame<CR>", {})
