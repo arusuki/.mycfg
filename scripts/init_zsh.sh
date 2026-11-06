@@ -32,6 +32,8 @@ DISABLE_AUTO_UPDATE="true"
 
 source $ZSH/oh-my-zsh.sh
 
+source "$HOME/scripts/zsh-correction.zsh"
+
 bindkey "^[[A" history-substring-search-up
 bindkey "^[[B" history-substring-search-down
 

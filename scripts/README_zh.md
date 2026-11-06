@@ -26,6 +26,56 @@ bash ~/scripts/bootstrap.sh
 bootstrap 会自动在 `${ZDOTDIR:-$HOME}/.zshrc` 中加入 `source "$HOME/scripts/init_zsh.sh"`；
 已有加载行时不会重复添加。安装完成后打开新的 Zsh 会话。
 
+## Zsh 命令与参数纠错
+
+`init_zsh.sh` 在 Oh My Zsh 之后自动加载 `zsh-correction.zsh`，仅对交互式 Zsh 生效。
+当前终端可直接启用，也可在不使用 Oh My Zsh 的 `.zshrc` 中加入：
+
+```zsh
+source "$HOME/scripts/zsh-correction.zsh"
+```
+
+- **回车纠错**：如果整行只有一个无引号的命令名、没有参数，例如 `gti<Enter>`，
+  先使用 Zsh 原生 `spell-word` 选择纠正结果，再直接执行，不再询问确认。
+  允许命令前后有空白；已有命令、别名和函数保持原样。没有候选时按原输入执行。
+  带参数的命令仍使用 `CORRECT` / `CORRECT_ALL` 检查命令名和文件路径参数，
+  例如 `gti status`，或在存在 `README.md` 时输入 `cat READEM.md`。
+  这种情况下必须确认才采用修正：`y` 修正并执行、`n` 按原样执行（默认，直接回车也是 `n`）、
+  `a` 取消、`e` 返回编辑。引号、展开、重定向和复合命令不走单命令自动纠正路径。
+- **空格自动纠错**：默认开启，在行尾按空格时使用原生 `_correct` 修正当前单词，
+  例如 `git statsu<Space>` → `git status `、`git --hlep<Space>` → `git --help `。
+  只采用唯一候选，只修改编辑区，不执行命令。已有正常补全匹配（如 `git stat`）、
+  多个纠错候选或没有候选时保持原样。只处理简单的无引号命令行；引号、转义、变量展开、
+  管道等复合语法、行中编辑以及终端的括号粘贴均不触发空格纠错。
+  支持 Emacs 和 Vi 插入模式的空格键；回车纠错另外绑定 Emacs、Vi 插入及命令模式的
+  Enter / Ctrl+J，并继续调用现有 `accept-line` widget。
+- **Tab 纠错**：正常补全无匹配时，使用 `_correct` / `_approximate`，最多允许两个编辑错误。
+  例如 `git statsu<Tab>` → `git status`、`git --hlep<Tab>` → `git --help`。
+  多个候选沿用现有补全菜单。子命令、选项和参数值的纠错依赖相应命令的补全定义，
+  不会在回车时自动理解或修复任意参数。因此 `git statsu<Enter>` 不会触发 zsh 的
+  子命令纠错；Git 自己输出的相似命令提示与本脚本无关。请在 `statsu` 后按 Tab 或空格。
+  有多个候选时再次按 Tab 显示菜单，用 Tab / 方向键选择；若已经按空格但未纠正，
+  先退格删除刚插入的空格，再按 Tab，确保补全的仍是错误单词。
+  `_correct` / `_approximate` 从较少错误开始寻找匹配，同一错误数可能有多个候选；
+  空格纠错不会替你任选其中一个。
+- 创建新文件名或需要保留原始参数时，使用 `nocorrect mkdir new-name` 等临时跳过回车和空格纠错。
+  现有别名（包括以 `nocorrect` 开头的别名）和其他快捷键保持原样。
+  `CORRECT_IGNORE` / `CORRECT_IGNORE_FILE` 仍控制原生回车纠错，空格纠错使用补全候选。
+  临时插入字面空格可按 `Ctrl+V` 后再按空格。
+
+当前会话只保留命令名的回车纠错：`unsetopt correct_all`；关闭全部回车纠错：
+`unsetopt correct correct_all`。Tab 纠错单独关闭：
+`zstyle ':completion:*' completer _complete _ignored`。再次加载脚本可恢复这些设置。
+空格纠错可独立关闭：`MYCFG_SPACE_CORRECTION=off`，恢复：`MYCFG_SPACE_CORRECTION=on`；
+也可在 `.zshrc` 中预先设置。空格已经改好的单词在回车时不会再次询问。
+
+独立回归检查（Python 3、Zsh、Git；临时目录和伪终端，不加载个人 `.zshrc`）：
+`python3 ~/scripts/tests/zsh-correction.py`。
+加 `--oh-my-zsh` 可同时验证本机的 Oh My Zsh、Git 补全、输入建议、语法高亮和历史搜索插件。
+原生行为参考：[纠错选项](https://zsh.sourceforge.io/Doc/Release/Options.html#Input_002fOutput)、
+[补全系统](https://zsh.sourceforge.io/Doc/Release/Completion-System.html)。
+单命令直接纠正使用 [ZLE 的 spell-word](https://zsh.sourceforge.io/Doc/Release/Zsh-Line-Editor.html)。
+
 ## 按平台维护
 
 | 平台 | 安装脚本 | 包清单 |

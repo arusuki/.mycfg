@@ -31,6 +31,66 @@ conflicts yourself; the script does not force overwrites.
 Bootstrap automatically adds `source "$HOME/scripts/init_zsh.sh"` to `${ZDOTDIR:-$HOME}/.zshrc`
 unless a loading line already exists. Open a new Zsh session after installation.
 
+## Zsh Command and Argument Correction
+
+`init_zsh.sh` automatically loads `zsh-correction.zsh` after Oh My Zsh, for interactive
+Zsh only. Enable it in the current terminal, or source it from a standalone `.zshrc`:
+
+```zsh
+source "$HOME/scripts/zsh-correction.zsh"
+```
+
+- **On Enter:** a single unquoted command without arguments, such as `gti<Enter>`,
+  uses native `spell-word` to select a correction and executes immediately without
+  confirmation. Surrounding whitespace is allowed. Existing commands, aliases and
+  functions are unchanged; if no correction is found, the original input is executed.
+  Lines with arguments still use native `CORRECT` / `CORRECT_ALL` to check command
+  names and filename arguments, such as `gti status` or `cat READEM.md` when `README.md`
+  exists. Those corrections require explicit confirmation: `y` corrects and executes,
+  `n` executes unchanged (the default, including pressing Enter), `a` aborts, and `e`
+  returns to editing. Quotes, expansions, redirections and compound lines do not use
+  the single-command automatic correction path.
+- **On Space:** enabled by default. At the end of the line, native `_correct` can change
+  `git statsu<Space>` to `git status ` or `git --hlep<Space>` to `git --help `.
+  Only a unique correction is applied, changing the editing buffer without executing it.
+  Normal completion matches (such as `git stat`), ambiguous corrections and missing
+  candidates leave the word unchanged. Only simple unquoted lines are processed;
+  quotes, escapes, expansions, compound syntax such as pipes, mid-line editing and
+  terminal bracketed paste bypass Space correction. Space is bound in Emacs and Vi
+  insert modes. Enter / Ctrl+J are also bound in Emacs, Vi insert and Vi command modes;
+  their wrapper continues to call the existing `accept-line` widget.
+- **On Tab:** when ordinary completion finds no match, `_correct` / `_approximate`
+  allow up to two editing errors. Examples: `git statsu<Tab>` → `git status` and
+  `git --hlep<Tab>` → `git --help`. Multiple matches use the existing completion menu.
+  Subcommands, options and argument values require a corresponding completion definition;
+  arbitrary arguments are not understood or repaired on Enter. Thus `git statsu<Enter>`
+  does not trigger Zsh subcommand correction; Git's own similar-command message is separate.
+  Press Tab or Space after `statsu` instead. For multiple candidates, press Tab again
+  and select with Tab / arrow keys. If Space left the typo unchanged, first backspace
+  over the inserted space so Tab still operates on the misspelled word.
+  `_correct` / `_approximate` try fewer errors first, but several candidates can have the
+  same error count; Space correction does not arbitrarily choose between them.
+- Use `nocorrect mkdir new-name` (or another command) to bypass Enter and Space correction
+  when creating new names or preserving literal arguments. Existing aliases, including
+  aliases starting with `nocorrect`, and other key bindings are preserved.
+  `CORRECT_IGNORE` and `CORRECT_IGNORE_FILE` still control native Enter correction;
+  Space correction uses completion candidates. Press Ctrl+V then Space to insert a literal space.
+
+Keep only command-name correction on Enter with `unsetopt correct_all`, or disable all
+Enter-time correction with `unsetopt correct correct_all`. Disable Tab correction separately
+with `zstyle ':completion:*' completer _complete _ignored`. Source the script again to restore
+those settings. Disable Space correction independently with `MYCFG_SPACE_CORRECTION=off`
+and restore it with `MYCFG_SPACE_CORRECTION=on`; this can also be set beforehand in `.zshrc`.
+Words already corrected by Space do not prompt again on Enter.
+
+Standalone regression check (Python 3, Zsh and Git; temporary directory and pseudo-terminal,
+without loading personal `.zshrc`): `python3 ~/scripts/tests/zsh-correction.py`.
+Add `--oh-my-zsh` to also test the installed Oh My Zsh, Git completion, autosuggestions,
+syntax highlighting and history search plugins.
+Native behavior: [correction options](https://zsh.sourceforge.io/Doc/Release/Options.html#Input_002fOutput)
+and [completion system](https://zsh.sourceforge.io/Doc/Release/Completion-System.html).
+Single-command automatic correction uses [ZLE spell-word](https://zsh.sourceforge.io/Doc/Release/Zsh-Line-Editor.html).
+
 ## Platform-specific Maintenance
 
 | Platform | Installation script | Package manifest |

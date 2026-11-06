@@ -6,6 +6,9 @@ shellcheck -x scripts/bootstrap.sh scripts/install_packages.sh scripts/tests/val
 luacheck --config .config/nvim/.luacheckrc .config/nvim
 lua5.1 scripts/tests/keymaps.lua .config/nvim/lua
 bash scripts/tests/aqua.sh
+zsh -n scripts/init_zsh.sh
+zsh -n scripts/zsh-correction.zsh
+python3 scripts/tests/zsh-correction.py
 
 # Test state (e.g. Harpoon lists) must not affect the user's Neovim data.
 test_state=$(mktemp -d)
