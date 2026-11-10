@@ -143,7 +143,6 @@ return {
     'windwp/nvim-autopairs',
     event = "InsertEnter",
     config = true,
-    enabled = false,
   },
   {
     "nvim-neo-tree/neo-tree.nvim",

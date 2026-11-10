@@ -1,6 +1,6 @@
 return {
-  "ej-shafran/compile-mode.nvim",
-  version = "^5.0.0",
+  "arusuki/compile-mode.nvim",
+  branch = "main",
   dependencies = { "nvim-lua/plenary.nvim" },
   keys = {
     { "<leader>xc", "<cmd>Compile<cr>", desc = "Compile: enter command" },
@@ -11,6 +11,7 @@ return {
   config = function()
     vim.g.compile_mode = {
       input_word_completion = true,
+      use_pseudo_terminal = true,
     }
   end,
 }

@@ -86,9 +86,11 @@ return {
     "arusuki/suggestions.nvim",
     lazy = false,
     opts = {
-      keys = {
-        word_left = false, -- Word movement is handled by config.insert-ops.
+      history = {
+        max_visible = 3,
+        max_results = 10,
       },
+      keys = {},
       input = {
         rules = {
           {
